@@ -1,0 +1,18 @@
+<!-- Windows firewall decoder.
+  - Will extract action, protocol, srcip, dstip, srcport and dstport.
+  - Examples:
+  - 2006-09-18 22:25:30 OPEN TCP 11.12.72.10 12.252.71.6 3311 445 - - - - - - - - -
+  - 2006-09-18 22:26:23 DROP UDP 11.152.183.14 239.255.255.250 65299 1900 310 - - - - - - - RECEIVE
+  - 2006-09-18 22:26:23 DROP UDP 11.152.183.14 239.255.255.250 65299 1900 310 - - - - - - - RECEIVE
+  - 2006-09-18 22:26:23 DROP UDP 11.152.183.14 239.255.255.250 65298 1900 319 - - - - - - - RECEIVE
+  -->
+<decoder name="windows-firewall">
+  <parent>windows-date-format</parent>
+  <type>firewall</type>
+  <use_own_name>true</use_own_name>
+  <prematch offset="after_parent">^OPEN|^CLOSE|^DROP</prematch>
+  <regex offset="after_parent">^(\w+) (\w+) </regex>
+  <regex>(\S+) (\S+) (\d+) (\d+) </regex>
+  <order>action, protocol, srcip, dstip, srcport, dstport</order>
+</decoder>
+

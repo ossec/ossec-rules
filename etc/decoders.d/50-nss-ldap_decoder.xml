@@ -1,0 +1,18 @@
+<!-- nss ldap decoders
+- Jun 26 08:19:25 servername sh: nss_ldap: reconnecting to LDAP server (sleeping 32 seconds)...
+- Aug 16 10:58:12 client nscd: nss_ldap: failed to bind to LDAP server ldap://ldap.example.com: Can't contact LDAP server
+-->
+<!--
+<decoder name="nss-ldap">
+  <program_name>^sh$|^nscd$</program_name>
+  <prematch>^nss_ldap</prematch>
+</decoder>
+
+<decoder name="ldap-server">
+  <parent>nss-ldap</parent>
+  <prematch> server </prematch>
+  <regex offset="after_prematch">ldap://(\S+):</regex>
+  <order>system_name</order>
+</decoder>
+-->
+

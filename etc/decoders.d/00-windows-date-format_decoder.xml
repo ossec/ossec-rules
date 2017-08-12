@@ -1,0 +1,10 @@
+<!-- Windows date format.
+  -  Pre match for windows date format. Used on Windows firewall,
+  -  IIS, etc.
+  -  Examples:
+  -  2006-07-23 04:40:02 xxx
+  -->
+<decoder name="windows-date-format">
+  <prematch>^\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d </prematch>
+</decoder>
+

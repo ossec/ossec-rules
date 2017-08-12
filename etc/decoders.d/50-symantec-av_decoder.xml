@@ -1,0 +1,14 @@
+<!-- Symantec AV decoder.
+  - Source: http://www.ossec.net/wiki/index.php/Symantec_Antivirus
+  - Examples:
+  - 24090D00000A,4,3,7,ACMELABS-SRV2,SYSTEM,,,,,,,16777216,"Update to computer ACMELABS-LU2K3 of virus definition file 81011r succeeded.",0,,0,,,,,0,,,,,,,,,,,,,(IP)-192.168.49.66,ACMELABSav,ACMELABS,,8.1.825
+  - 24090D00000F,4,3,7,ACMELABS-SRV2,SYSTEM,,,,,,,16777216,"Update to computer ACMELABS-APPS-BOX4 of virus definition file 81011r succeeded.",0,,0,,,,,0,,,,,,,,,,,,,(IP)-192.168.49.66,ACMELABSav,ACMELABS,,8.1.825
+  - 240801012128,5,1,720997,RBLWAP,SYSTEM,Trojan.Zlob,C:\WINDOWS\system32\ld100.tmp,5,4,4,256,570441764,"",0,,0,,0,4254,0,0,0,0,0,0,20060830.022,58100,2,4,0,acme-AVSRV,{579642AA-5A5E-46E1-8613-2289349D1F27},,(IP)-192.168.100.237,acmeav,acme,,8.1.825
+  -->
+<decoder name="symantec-av">
+  <prematch>^\w\w\w\w\w\w\w\w\w\w\w\w,</prematch>
+  <regex offset="after_prematch">^(\d+),\d+,\d+,(\S+),(\.+),</regex>
+  <order>id, system_name, extra_data</order>
+  <fts>name, location, id, system_name, extra_data</fts>
+</decoder>
+

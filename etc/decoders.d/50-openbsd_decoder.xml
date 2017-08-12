@@ -1,0 +1,48 @@
+<!-- OpenBSD kernel messages -->
+<decoder name="bsd_kernel">
+  <program_name>^/bsd</program_name>
+</decoder>
+
+<decoder name="bsd_arp">
+  <parent>bsd_kernel</parent>
+  <prematch offset="after_parent">^arp </prematch>
+  <regex offset="after_prematch"> for (\S+) by (\S+) on \S+</regex>
+  <order>dstip, extra_data</order>
+</decoder>
+
+<!-- OpenBSD deluser
+  -  2014-02-21T10:22:55.134355-05:00 arrakis userdel[23023]: user removed: name=dac
+-->
+
+<decoder name="open-userdel">
+  <program_name>userdel</program_name>
+  <regex>user removed: name=(\S+)$</regex>
+  <order>srcuser</order>
+</decoder>
+
+
+
+<!-- OpenBSD mountd decoder
+- Apr 11 20:01:02 ix mountd[11618]: Refused mount RPC from host 192.168.17.10 port 45659
+-->
+
+<decoder name="mountd">
+  <program_name>^mountd</program_name>
+</decoder>
+
+<decoder name="mountd-host">
+  <parent>mountd</parent>
+  <prematch>from host </prematch>
+  <regex offset="after_prematch">(\S+) port \d+$</regex>
+  <order>srcip</order>
+</decoder>
+
+<!-- OpenBSD groupdel
+  - May 28 09:15:43 ix groupdel[25984]: group deleted: name=_dbus
+-->
+<decoder name="groupdel">
+  <program_name>groupdel</program_name>
+  <regex>^group deleted: name=(\S+)$</regex>
+  <order>extra_data</order>
+</decoder>
+

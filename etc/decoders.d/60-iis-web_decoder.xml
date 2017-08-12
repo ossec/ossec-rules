@@ -1,0 +1,55 @@
+<!-- IIS 5 WWW W3C log format.
+  - #Fields: date time c-ip cs-username s-sitename s-computername s-ip s-port cs-method cs-uri-stem cs-uri-query sc-status cs-host cs(User-Agent) cs(Referer)
+  - Examples:
+  - 2006-07-23 04:40:02 1.2.3.4 - W3SVC3 CIN1WEB03 1.2.3.4 443 GET /Default.asp - 200 hiden.com Mozilla/4.0+(compatible;+MSIE+6.0;+Windows+NT+5.1;+Avant+Browser;+Avant+Browser;+.NET+CLR+1.1.4322;+.NET+CLR+2.0.50727) -
+  -->
+<decoder name="web-accesslog-iis5">
+  <parent>windows-date-format</parent>
+  <type>web-log</type>
+  <use_own_name>true</use_own_name>
+  <prematch offset="after_parent">^\S+ \S+ W3SVC</prematch>
+  <regex offset="after_parent">^(\S+) \S+ \S+ \S+ \S+ </regex>
+  <regex>\d+ \S+ (\S+ \S+) (\d+) </regex>
+  <order>srcip,url,id</order>
+</decoder>
+
+
+<!-- IIS6 WWW W3C log format.
+  - #Fields: date time s-sitename s-computername s-ip cs-method cs-uri-stem
+  cs-uri-query s-port cs-username c-ip cs-version cs(User-Agent)
+  cs(Cookie) cs(Referer) cs-host sc-status sc-substatus sc-win32-status
+  sc-bytes cs-bytes time-taken
+  - Examples:
+  - 2007-01-22 05:00:11 W3SVC1 HOSTNAME 1.1.1.1 POST /SimpleAuthWebService/SimpleAuth.asmx - 80 - 2.2.2.2 HTTP/1.1 Windows-Update-Agent - - hostname 200 0 0 1467 841 31
+  -->
+<decoder name="web-accesslog-iis6">
+  <parent>windows-date-format</parent>
+  <type>web-log</type>
+  <use_own_name>true</use_own_name>
+  <prematch offset="after_parent">^W3SVC\d+ \S+ \S+ \S+ </prematch>
+  <regex offset="after_prematch">^(\S+ \S+) \d+ \S+ (\S+) </regex>
+  <regex>\S+ \S+ \S+ \S+ \S+ (\d+) </regex>
+  <order>url, srcip, id</order>
+</decoder>
+
+<!-- Windows IIS decoder for default settings
+  -  Tested with IIS 7.5 and IIS 8.5 (Windows 2008R2 and Windows 2012R2)
+  -  Will extract URL, Source IP, and HTTP response code
+  -  Examples:
+  -  IIS 7.5
+  -  2015-07-28 15:07:26 1.2.3.4 GET /QOsa/Browser/Default.aspx UISessionId=SN1234123&DeviceId=SN12312232SHARP+MX-4111N 80 - 31.3.3.7 OpenSystems/1.0;+product-family="85";+product-version="123ER123" 302 0 0 624
+  -  IIS 8.5
+  -  2015-03-11 20:28:21 1.2.3.4 GET /certsrv/Default.asp - 80 - 31.3.3.7 Mozilla/5.0+(compatible;+MSIE+9.0;+Windows+NT+6.1;+WOW64;+Trident/7.0) - 401 2 5 0
+  -  2015-03-11 21:59:09 1.2.3.4 GET /console/faces/com_sun_web_ui/jsp/version/version_30.jsp - 80 - 31.3.3.7 Sun+Web+Console+Fingerprinter/7.15 - 404 0 2 0
+  -  2015-03-11 22:01:58 1.2.3.4 GET /IISADMPWD/aexp.htr - 80 - 31.3.3.7 - - 404 0 2 0
+-->
+
+<decoder name="web-accesslog-iis-default">
+  <parent>windows-date-format</parent>
+  <type>web-log</type>
+  <use_own_name>true</use_own_name>
+  <prematch offset="after_parent">^\S+ GET |^\S+ POST </prematch>
+  <regex offset="after_prematch">(\S+ \S*) \.* (\S+) \S*\.* (\d\d\d) \S+ \S+ \S+</regex>
+  <order>url,srcip,id</order>
+</decoder>
+
