@@ -45,184 +45,215 @@
   -  Nov  6 09:53:38 hagal sshd[697]: error: accept: Software caused connection abort
   -  Nov  9 11:36:55 ecaz sshd[26967]: pam_succeed_if(sshd:auth): error retrieving information about user _z9xxbBW
   -->
-
 <decoder name="sshd">
-  <program_name>^sshd</program_name>
+  <program_name_pcre2>^sshd</program_name_pcre2>
 </decoder>
 
 <decoder name="sshd-success">
   <parent>sshd</parent>
-  <prematch>^Accepted</prematch>
-  <regex offset="after_prematch">^ \S+ for (\S+) from (\S+) port </regex>
+  <prematch_pcre2>^Accepted</prematch_pcre2>
+  <pcre2 offset="after_prematch">^ \S+ for (\S+) from (\S+) port </pcre2>
   <order>user, srcip</order>
   <fts>name, user, location</fts>
 </decoder>
 
 <decoder name="ssh-denied">
   <parent>sshd</parent>
-  <prematch>^User \S+ from </prematch>
-  <regex offset="after_parent">^User (\S+) from (\S+) </regex>
+  <prematch_pcre2>^User \S+ from </prematch_pcre2>
+  <pcre2 offset="after_parent">^User (\S+) from (\S+) </pcre2>
   <order>user, srcip</order>
 </decoder>
 
 <decoder name="sshd-success-solaris">
   <parent>sshd</parent>
-  <prematch>^User </prematch>
-  <regex offset="after_prematch">^(\S+), coming from (\S+), </regex>
+  <prematch_pcre2>^User </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+), coming from (\S+), </pcre2>
   <order>user, srcip</order>
   <fts>name, user, location</fts>
 </decoder>
 
 <decoder name="ssh-kbd">
   <parent>sshd</parent>
-  <prematch offset="after_parent">^Postponed keyboard-interactive|^Failed keyboard-interactive</prematch>
-  <regex offset="after_prematch"> user (\S+) from (\S+) port (\d+) </regex>
+  <prematch_pcre2 offset="after_parent">^Postponed keyboard-interactive|^Failed keyboard-interactive</prematch_pcre2>
+  <pcre2 offset="after_prematch"> user (\S+) from (\S+) port (\d+) </pcre2>
   <order>user, srcip, srcport</order>
 </decoder>
 
 <decoder name="ssh-invfailed">
   <parent>sshd</parent>
-  <prematch>^Failed \S+ for invalid user|^Failed \S+ for illegal user</prematch>
-  <regex offset="after_prematch">from (\S+) port \d+ \w+$</regex>
+  <prematch_pcre2>^Failed \S+ for invalid user|^Failed \S+ for illegal user</prematch_pcre2>
+  <pcre2 offset="after_prematch">from (\S+) port \d+ \w+$</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ssh-failed">
   <parent>sshd</parent>
-  <prematch>^Failed \S+ </prematch>
-  <regex offset="after_prematch">^for (\S+) from (\S+) port \d+</regex>
+  <prematch_pcre2>^Failed \S+ </prematch_pcre2>
+  <pcre2 offset="after_prematch">^for (\S+) from (\S+) port \d+</pcre2>
   <order>user, srcip</order>
 </decoder>
 
 <decoder name="ssh-error">
   <parent>sshd</parent>
-  <prematch>^error: PAM: Authentication \w+ </prematch>
-  <regex offset="after_prematch">^for (\S+) from (\S+)$</regex>
+  <prematch_pcre2>^error: PAM: Authentication \w+ </prematch_pcre2>
+  <pcre2 offset="after_prematch">^for (\S+) from (\S+)$</pcre2>
   <order>user, srcip</order>
 </decoder>
 
 <decoder name="ssh-pam-error">
   <parent>sshd</parent>
-  <prematch>^error: PAM: </prematch>
-  <regex offset="after_prematch">user (\S+) from (\S+)</regex>
+  <prematch_pcre2>^error: PAM: </prematch_pcre2>
+  <pcre2 offset="after_prematch">user (\S+) from (\S+)</pcre2>
   <order>user, srcip</order>
 </decoder>
 
 <decoder name="ssh-reverse-mapping">
   <parent>sshd</parent>
-  <prematch>^reverse mapping checking </prematch>
-  <regex offset="after_prematch">^\w+ for \S+ [(\S+)] |^\w+ for (\S+) </regex>
+  <prematch_pcre2>^reverse mapping checking </prematch_pcre2>
+  <pcre2 offset="after_prematch">^\w+ for \S+ \[(\S+)\] |^\w+ for (\S+) </pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ssh-invalid-user">
   <parent>sshd</parent>
-  <prematch>^Invalid user|^Illegal user</prematch>
-  <regex offset="after_prematch"> from (\S+)$</regex>
+  <prematch_pcre2>^Invalid user|^Illegal user</prematch_pcre2>
+  <pcre2 offset="after_prematch"> from (\S+)</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ssh-scan">
   <parent>sshd</parent>
-  <prematch>^scanned from</prematch>
-  <regex offset="after_prematch"> (\S+) </regex>
+  <prematch_pcre2>^scanned from</prematch_pcre2>
+  <pcre2 offset="after_prematch"> (\S+) </pcre2>
   <order>srcip</order>
 </decoder>
 
-<decoder name="ssh-scan2">
+<decoder name="ssh-received">
   <parent>sshd</parent>
-  <prematch>^Did not receive identification</prematch>
-  <regex offset="after_prematch"> from (\S+)$</regex>
+  <prematch_pcre2>^Received disconnect </prematch_pcre2>
+  <pcre2 offset="after_prematch">^from (\S+): |^from (\S+) </pcre2>
+  <order>srcip</order>
+</decoder>
+
+<decoder name="ssh-disconnected">
+  <parent>sshd</parent>
+  <prematch_pcre2>^Disconnected from invalid user</prematch_pcre2>
+  <pcre2 offset="after_prematch">\S+ (\S+) </pcre2>
+  <order>srcip</order>
+</decoder>
+
+<decoder name="ssh-connection">
+  <parent>sshd</parent>
+  <prematch_pcre2>^Connection closed by </prematch_pcre2>
+  <pcre2 offset="after_prematch">user (\S+) (\S+) </pcre2>
+  <order>user, srcip</order>
+</decoder>
+
+<decoder name="ssh-negotiate">
+  <parent>sshd</parent>
+  <prematch_pcre2>^Unable to negotiate with </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+) port (\d+)</pcre2>
+  <order>srcip, srcport</order>
+</decoder>
+
+<decoder name="ssh-protocol">
+  <parent>sshd</parent>
+  <prematch_pcre2>^Protocol major versions differ for </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+)</pcre2>
   <order>srcip</order>
 </decoder>
 
 <!--
-
-Jul 12 16:10:26 cloud sshd[14486]: Bad protocol version identification 'GET http://m.search.yahoo.com/ HTTP/1.1' from 112.98.69.104 port 3533
+     Jul 12 16:10:26 cloud sshd[14486]: Bad protocol version identification 'GET http://m.search.yahoo.com/ HTTP/1.1' from 112.98.69.104 port 3533
 Jul 12 16:10:41 cloud sshd[14530]: Bad protocol version identification 'GET http://check2.zennolab.com/proxy.php HTTP/1.1' from 46.182.129.46 port 60866
 Jul 12 16:11:31 cloud sshd[14582]: Bad protocol version identification 'GET http://www.msftncsi.com/ncsi.txt HTTP/1.1' from 88.244.115.169 port 62240
 Jul 12 16:12:15 cloud sshd[14662]: Bad protocol version identification 'GET http://m.search.yahoo.com/ HTTP/1.1' from 118.76.116.187 port 54513
-
+e.g. OpenSSH > 7.2:
+Sep  4 21:13:05 example sshd[12853]: Did not receive identification string from 192.168.0.1 port 33021
+e.g. OpenSSH <= 7.2:
+Sep  4 21:14:25 example sshd[18368]: Did not receive identification string from 192.168.0.1
 -->
 
-<decoder name="ssh-scan3">
+<decoder name="ssh-scan2">
   <parent>sshd</parent>
-  <prematch>^Bad protocol version </prematch>
-  <regex offset="after_prematch">\w* from (\S+)</regex>
-  <order>srcip</order>
+  <prematch_pcre2>^Did not receive identification |^Bad protocol version </prematch_pcre2>
+  <pcre2 offset="after_prematch"> from (\S+)$| from (\S+) port (\d+?)$</pcre2>
+  <order>srcip,srcport</order>
 </decoder>
 
 <decoder name="ssh-osx-refuse">
   <parent>sshd</parent>
-  <prematch>^refused connect </prematch>
-  <regex offset="after_prematch">^from (\S+)$</regex>
+  <prematch_pcre2>^refused connect </prematch_pcre2>
+  <pcre2 offset="after_prematch">^from (\S+)$|^from \S+ \((\S+[A-Za-z0-9@_-]+?)\)$|^from \S+ \((\S+::)\)$</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ssh-closed">
   <parent>sshd</parent>
-  <prematch>^Connection closed </prematch>
-  <regex offset="after_prematch">^by (\S+)$</regex>
+  <prematch_pcre2>^Connection closed </prematch_pcre2>
+  <pcre2 offset="after_prematch">^by (\S+)$</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ssh-disconnect">
   <parent>sshd</parent>
-  <prematch>^Received disconnect </prematch>
-  <regex offset="after_prematch">^from (\S+):</regex>
+  <prematch_pcre2>^Received disconnect </prematch_pcre2>
+  <pcre2 offset="after_prematch">^from (\S+):</pcre2>
   <order>srcip</order>
 </decoder>
 
 <!--XXX
-<decoder name="ssh-pam">
+     <decoder name="ssh-pam">
   <parent>sshd</parent>
-  <prematch>PAM: Module</prematch>
-  <regex>for (\S+) from (\S+)$</regex>
+  <prematch_pcre2>PAM: Module</prematch_pcre2>
+  <pcre2>for (\S+) from (\S+)$</pcre2>
   <order>user, srcip</order>
 </decoder>
 
 <decoder name="ssh-connect-to">
   <parent>sshd</parent>
-  <prematch>connect_to</prematch>
-  <regex>connect_to: (\S+) port (\d+):</regex>
+  <prematch_pcre2>connect_to</prematch_pcre2>
+  <pcre2>connect_to: (\S+) port (\d+?):</pcre2>
   <order>dstip,dstport</order>
 </decoder>
 -->
 
 <decoder name="sshd-ldap">
   <parent>sshd</parent>
-  <prematch>^pam_ldap: </prematch>
-  <regex>user "uid=(\S+),ou=\w+,dc=\w+,dc=\w+"</regex>
+  <prematch_pcre2>^pam_ldap: </prematch_pcre2>
+  <pcre2>user "uid=(\S+),ou=[A-Za-z0-9@_-]+?,dc=[A-Za-z0-9@_-]+?,dc=[A-Za-z0-9@_-]+"</pcre2>
   <order>user</order>
 </decoder>
 
 <decoder name="sshd-negotiate">
   <parent>sshd</parent>
-  <prematch offset="after_parent">fatal: Unable to negotiate with </prematch>
-  <regex offset="after_prematch">^(\S+) port (\d+): |^(\S+): </regex>
+  <prematch_pcre2 offset="after_parent">fatal: Unable to negotiate with </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+) port (\d+?): |^(\S+): </pcre2>
   <order>srcip, srcport</order>
 </decoder>
 
 <decoder name="sshd-pam-host-user">
   <parent>sshd</parent>
-  <prematch>rhost=\S+\s+user=\S+</prematch>
-  <regex>rhost=(\S+)\s+user=(\S+)</regex>
+  <prematch_pcre2>rhost=\S+[ ]+?user=\S+</prematch_pcre2>
+  <pcre2>rhost=(\S+)[ ]+?user=(\S+)</pcre2>
   <order>srcip, user</order>
 </decoder>
 
+
 <!--
-<decoder name="sshd-invalid">
+     <decoder name="sshd-invalid">
   <parent>sshd</parent>
-  <prematch>^input_user_auth_request: </prematch>
-  <regex offset="after_prematch"> user (\S+)</regex>
+  <prematch_pcre2>^input_user_auth_request: </prematch_pcre2>
+  <pcre2 offset="after_prematch"> user (\S+)</pcre2>
   <order>user</order>
 </decoder>
 -->
 
 <decoder name="sshd-exceed">
   <parent>sshd</parent>
-  <prematch> exceeded for </prematch>
-  <regex offset="after_prematch">^(\S+) from (\S+) port (\d+) </regex>
+  <prematch_pcre2> exceeded for </prematch_pcre2>
+  <pcre2 offset="after_prematch">(\S+) from (\S+) port (\d+) </pcre2>
   <order>user, srcip, srcport</order>
 </decoder>
+
 
