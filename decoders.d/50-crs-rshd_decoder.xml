@@ -1,15 +1,17 @@
 <!--
- - rshd decoder
+      - rshd decoder
  - Example message:
  - Dec 17 10:49:23 hostname rshd[347339]: Connection from 10.217.223.31 on illegal port
  -->
 <decoder name="rshd">
-  <program_name>^rshd$</program_name>
+  <program_name_pcre2>^rshd$</program_name_pcre2>
 </decoder>
 
 <decoder name="rshd-illegal-connection">
   <parent>rshd</parent>
-  <regex>^Connection from (\S+) on illegal port$</regex>
+  <pcre2>^Connection from (\S+) on illegal port$</pcre2>
   <order>srcip</order>
 </decoder>
+
+
 
