@@ -1,5 +1,5 @@
 <!-- NCSA common log decoder (used by apache, Lotus Domino and IIS NCSA).
-  -  Will extract the srcip, url and id.
+       -  Will extract the srcip, url and id.
   -  Every web access log must use "web-log" as their
   -  type if they want to be matched against the web rules.
   - Examples:
@@ -14,9 +14,10 @@
   -->
 <decoder name="web-accesslog">
   <type>web-log</type>
-  <prematch>^\S+ \S+ \S+ [\S+ \S\d+] "\w+ \S+ HTTP\S+" </prematch>
-  <regex>^(\S+) \S+ (\S+) [\S+ \S\d+] </regex>
-  <regex>"(\w+) (\S+) HTTP\S+" (\d+) </regex>
+  <prematch_pcre2>^\S+ \S+ \S+ \[\S+ \S\d+\] "\w+ \S+ HTTP\S+" </prematch_pcre2>
+  <pcre2>^(\S+) \S+ (\S+) \[\S+ \S\d+\] </pcre2>
+  <pcre2>"(\w+) (\S+) HTTP\S+" (\d+) </pcre2>
   <order>srcip, srcuser, action, url, id</order>
 </decoder>
+
 
