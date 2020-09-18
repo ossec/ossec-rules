@@ -18,55 +18,58 @@
   - Nov 11 22:46:29 localhost vsftpd: pam_unix(vsftpd:auth): authentication failure; logname= uid=0 euid=0 tty= ruser= rhost=1.2.3.4
   - Sep 28 15:28:58 server login: pam_unix(login:session): session opened for user carl by LOGIN(uid=0)
   - Sep 28 15:35:18 server sshd[123]: pam_unix(sshd:session): session opened for user carl by (uid=0)
+  - Mar 29 00:42:09 server saslauthd[1230]: pam_succeed_if(smtp:auth): error retrieving information about user demo
+
   -->
 <decoder name="pam">
-  <program_name>(pam_unix)$</program_name>
+  <program_name_pcre2>\(pam_unix\)$</program_name_pcre2>
 </decoder>
 
 <decoder name="pam">
-  <program_name></program_name>
-  <prematch>^pam_unix|^\(pam_unix\)</prematch>
+  <!-- allow any program name if the prematch_pcre2 regex matches -->
+  <program_name_pcre2>.*</program_name_pcre2>
+  <prematch_pcre2>^pam_unix|^\(pam_unix\)|^pam_succeed_if</prematch_pcre2>
 </decoder>
 
 <decoder name="pam-user">
   <parent>pam</parent>
-  <prematch>^session \w+ </prematch>
-  <regex offset="after_prematch">^for user (\S+)</regex>
+  <prematch_pcre2>^session \w+ </prematch_pcre2>
+  <pcre2 offset="after_prematch">^for user (\S+)</pcre2>
   <order>user</order>
 </decoder>
 
 <!--XXXX<decoder name="pam-user2">
-  <parent>pam</parent>
-  <prematch>^session \S+ </prematch>
-  <regex>for user (\S+)</regex>
+       <parent>pam</parent>
+  <prematch_pcre2>^session \S+ </prematch_pcre2>
+  <pcre2>for user (\S+)</pcre2>
   <order>user</order>
 </decoder>
 -->
 
 <decoder name="pam-host-user">
   <parent>pam</parent>
-  <prematch>rhost=\S+\s+user=\S+</prematch>
-  <regex>rhost=(\S+)\s+user=(\S+)</regex>
+  <prematch_pcre2>rhost=\S+[ ]+user=\S+</prematch_pcre2>
+  <pcre2>rhost=(\S+)[ ]+?user=(\S+)</pcre2>
   <order>srcip, user</order>
 </decoder>
 
 <decoder name="pam-ruser">
   <parent>pam</parent>
-  <prematch> ruser</prematch>
-  <regex offset="after_prematch">^=(\S+) </regex>
+  <prematch_pcre2> ruser</prematch_pcre2>
+  <pcre2 offset="after_prematch">^=(\S+) </pcre2>
   <order>user</order>
 </decoder>
 
 <decoder name="pam-ruser">
   <parent>pam</parent>
-  <regex> rhost=(\S+)$</regex>
+  <pcre2> rhost=(\S+)</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="pam-host">
   <parent>pam</parent>
-  <prematch> rhost</prematch>
-  <regex offset="after_prematch">^=(\S+)</regex>
+  <prematch_pcre2> rhost</prematch_pcre2>
+  <pcre2 offset="after_prematch">^=(\S+)</pcre2>
   <order>srcip</order>
 </decoder>
 
