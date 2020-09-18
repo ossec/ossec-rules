@@ -1,5 +1,5 @@
 <!-- Courier decoder
-  - Examples:
+       - Examples:
   - pop3d-ssl: LOGIN FAILED, ip=[::ffff:192.168.0.200]
   - courierpop3login: LOGIN, user=web10_mauricio, ip=[::ffff:192.168.0.100]
   - courierpop3login: LOGIN FAILED, ip=[::ffff:192.168.0.188]
@@ -7,19 +7,20 @@
   - Nov 24 18:18:28 gandalf pop3d: LOGIN FAILED, ip=[::ffff:1.2.3.4]
   -->
 <decoder name="courier">
-  <program_name>^pop3d|^courierpop3login|^imaplogin|^courier-pop3|^courier-imap</program_name>
+  <program_name_pcre2>^pop3d|^courierpop3login|^imaplogin|^courier-pop3|^courier-imap</program_name_pcre2>
 </decoder>
 
 <decoder name="courier-login">
   <parent>courier</parent>
-  <prematch>^LOGIN, </prematch>
-  <regex offset="after_prematch">^user=(\S+), ip=[(\S+)]$</regex>
+  <prematch_pcre2>^LOGIN, </prematch_pcre2>
+  <pcre2 offset="after_prematch">^user=(\S+), ip=\[(\S+)\]$</pcre2>
   <order>user, srcip</order>
 </decoder>
 
 <decoder name="courier-generic">
   <parent>courier</parent>
-  <regex>, ip=[(\S+)]$|, ip=[(\S+)]$</regex>
+  <pcre2>, ip=\[(\S+)\]$</pcre2>
   <order>srcip</order>
 </decoder>
+
 
