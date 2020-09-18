@@ -1,6 +1,6 @@
 <!--
- - Samba decoder.
- - Will extraxt the username/srcip
+      - Samba decoder.
+ - Will extract the username/srcip
  - Examples:
  - smbd[832]: Denied connection from (192.168.3.23)
  - smbd[832]: Connection denied from 0.0.0.0
@@ -9,37 +9,37 @@
   -->
 
 <decoder name="smbd">
-  <program_name>^smbd</program_name>
+  <program_name_pcre2>^smbd</program_name_pcre2>
 </decoder>
 
 <decoder name="smbd-user">
   <parent>smbd</parent>
-  <prematch>User name:</prematch>
-  <regex offset="after_prematch">^ (\S+).</regex>
+  <prematch_pcre2>User name:</prematch_pcre2>
+  <pcre2 offset="after_prematch">^ (\S+)\.</pcre2>
   <order>user</order>
 </decoder>
 
 <decoder name="smbd-ip">
   <parent>smbd</parent>
-  <regex> from \((\S+)\)</regex>
+  <pcre2> from \((\S+)\)</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="smbd-from">
   <parent>smbd</parent>
-  <prematch> from (\S+)$</prematch>
-  <regex> from (\S+)$</regex>
+  <prematch_pcre2> from (\S+)$</prematch_pcre2>
+  <pcre2> from (\S+)$</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="smbd-client">
   <parent>smbd</parent>
-  <prematch>to client \S+.</prematch>
-  <regex>to client (\S+). </regex>
+  <prematch_pcre2>to client \S+\.</prematch_pcre2>
+  <pcre2>to client (\S+)\. </pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="nmbd">
-  <program_name>^nmbd</program_name>
+  <program_name_pcre2>^nmbd</program_name_pcre2>
 </decoder>
 
