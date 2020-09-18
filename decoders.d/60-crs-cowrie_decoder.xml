@@ -1,0 +1,33 @@
+<!-- MHN - Json log decoder - Cowrie -->
+<!-- include /var/log/mhn/mhn-json.log to ossec.conf -->
+<!-- {"direction": "inbound", "protocol": "ip", "ids_type": "network", "ssh_username": "admin", "app": "cowrie", "transport": "tcp", "dest_port": 22, "src_port": 45302, "severity": "high", "timestamp": "2018-10-23T11:22:36.597864", "vendor_product": "Cowrie", "sensor": "5e7031cf-b74d-22f9-57e0-254166752457", "src_ip": "16.10.10.10", "ssh_password": "password", "signature": "SSH login attempted on cowrie honeypot", "ssh_version": "'SSH-2.0-Sun_SSH_1.1.4'", "type": "cowrie.sessions", "dest_ip": "16.10.10.11"} -->
+<!-- {"direction": "inbound", "protocol": "ip", "ids_type": "network", "timestamp": "2018-10-23T07:45:56.937787", "vendor_product": "Cowrie", "type": "cowrie.sessions", "app": "cowrie", "src_ip": "16.10.10.10", "dest_port": 22, "signature": "SSH session on cowrie honeypot", "ssh_version": "'SSH-2.0-Sun_SSH_1.1.4'", "src_port": 45302, "dest_ip": "16.10.10.11", "sensor": "5e7031cf-b74d-22f9-57e0-254166752457", "transport": "tcp", "severity": "high"} -->
+<!-- {"direction": "inbound", "protocol": "ip", "ids_type": "network", "timestamp": "2018-11-14T10:32:38.686578", "app": "cowrie", "transport": "tcp", "dest_port": 22, "src_port": 45302, "severity": "high", "vendor_product": "Cowrie", "sensor": "5e7031cf-b74d-22f9-57e0-254166752457", "src_ip": "16.10.10.10", "command": "whoami", "signature": "command attempted on cowrie honeypot", "ssh_version": "'SSH-2.0-OpenSSH_7.4p1 Debian-10+deb9u4'", "type": "cowrie.sessions", "dest_ip": "16.10.10.11"} -->
+
+<decoder name="cowrie">
+  <prematch_pcre2>cowrie\.sessions</prematch_pcre2>
+</decoder>
+
+<decoder name="cowrie-attempt">
+  <parent>cowrie</parent>
+  <prematch_pcre2>"SSH login attempted</prematch_pcre2>
+  <pcre2>^\{"direction": "\S+", "protocol": "(\S+)", "ids_type": "(\S+)", "ssh_username": "(\S+)", "app": "cowrie", "transport": "\S+", "dest_port": (\d+), "src_port": (\d+), "severity": "\S+", "timestamp": "\d{4}-\d{2}-\d{2}", "vendor_product": "Cowrie", "sensor": \S+, "src_ip": "(\S+)", "ssh_password": "\S+", "signature": "(.+)", "ssh_version": .+, "type": "cowrie\.sessions", "dest_ip": "(\S+)"\}</pcre2>
+  <order>protocol, extra_data, user, dstport, srcport, srcip, action, dstip</order>
+</decoder>
+
+<decoder name="cowrie-session">
+  <parent>cowrie</parent>
+  <prematch_pcre2>"SSH session on cowrie honeypot</prematch_pcre2>
+  <pcre2>^\{"direction": "\S+", "protocol": "(\S+)", "ids_type": "(\S+)", "timestamp": "\d{4}-\d{2}-\d{2}\w\d{2}:\d{2}:\d{2}.\d+", "vendor_product": "Cowrie", "type": "cowrie\.sessions", "app": "cowrie", "src_ip": "(\S+)", "dest_port": (\d+?), "signature": "(.+)", "ssh_version": .+, "src_port": (\d+?), "dest_ip": "(\S+)", "sensor": \S+, "transport": "\S+", "severity": "\S+"\}</pcre2>
+  <order>protocol, extra_data, srcip, dstport, action, srcport, dstip</order>
+</decoder>
+
+
+<decoder name="cowrie-command">
+  <parent>cowrie</parent>
+  <prematch_pcre2>"command attempted on cowrie honeypot</prematch_pcre2>
+  <pcre2>^\{"direction": "\S+", "protocol": "(\S+)", "ids_type": "(\S+)", "timestamp": "\d{4}-\d{2}-\d{2}\w\d{2}:\d{2}:\d{2}.\d+", "app": "cowrie", "transport": "\S+", "dest_port": (\d+?), "src_port": (\d+?), "severity": "\S+", "vendor_product": "Cowrie", "sensor": \S+, "src_ip": "(\S+)", "command": "\S+", "signature": "(.+)", "ssh_version": .+, "type": "cowrie\.sessions", "dest_ip": "(\S+)"\}</pcre2>
+  <order>protocol, extra_data, dstport, srcport, srcip, action, dstip</order>
+</decoder>
+
+

@@ -1,11 +1,12 @@
 <!-- Clamav and Freshclam decoder
-  -  Nov  5 22:59:19 ix freshclam[32349]: Incremental update failed, trying to download daily.cvd
+       -  Nov  5 22:59:19 ix freshclam[32349]: Incremental update failed, trying to download daily.cvd
 -->
 <decoder name="clamd">
-  <program_name>^clamd</program_name>
+  <program_name_pcre2>^clamd</program_name_pcre2>
 </decoder>
 
 <decoder name="freshclam">
-  <program_name>^freshclam</program_name>
+  <program_name_pcre2>^freshclam</program_name_pcre2>
 </decoder>
+
 

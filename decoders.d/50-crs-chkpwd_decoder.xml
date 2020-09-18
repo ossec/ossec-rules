@@ -1,14 +1,15 @@
-x_chkpwd
-  - Jul 21 07:40:29 localhost unix_chkpwd[15804]: password check failed for user (username)
+<!-- unix_chkpwd
+       - Jul 21 07:40:29 localhost unix_chkpwd[15804]: password check failed for user (username)
 -->
 <decoder name="unix_chkpwd">
-  <program_name>^unix_chkpwd</program_name>
+  <program_name_pcre2>^unix_chkpwd</program_name_pcre2>
 </decoder>
 
 <!--Jul 21 07:40:29 localhost unix_chkpwd[15804]: password check failed for user (username)-->
 <decoder name="chkpwd-user">
   <parent>unix_chkpwd</parent>
-  <regex offset="after_parent">user \((\w+)\)$</regex>
+  <pcre2 offset="after_parent">user \(([A-Za-z0-9@_-]+)\)$</pcre2>
   <order>srcuser</order>
 </decoder>
+
 

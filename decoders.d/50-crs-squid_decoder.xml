@@ -1,5 +1,5 @@
 <!-- Squid access log decoder.
-  - Will extract the srcip.
+       - Will extract the srcip.
   - Author: Ahmet Ozturk
   - Examples:
   - 1140701044.525   1231 192.168.1.201 TCP_DENIED/400 1536
@@ -9,8 +9,9 @@
   -->
 <decoder name="squid-accesslog">
   <type>squid</type>
-  <prematch>^\d+ \S+ </prematch>
-  <regex>^\d+ (\S+) (\w+)/(\d+) \d+ \w+ (\S+) </regex>
+  <prematch_pcre2>^\d+? \S+ </prematch_pcre2>
+  <pcre2>^\d+? (\S+) ([A-Za-z0-9@_-]+?)/(\d+?) \d+? [A-Za-z0-9@_-]+? (\S+) </pcre2>
   <order>srcip,action,id,url</order>
 </decoder>
+
 

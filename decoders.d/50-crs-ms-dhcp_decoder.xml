@@ -1,28 +1,29 @@
 <!-- Microsoft Windows 2003 ipv4, 2008 ipv4/ipv6 DHCP decoder for OSSEC
-  -  Author: phishphreek@gmail.com
+       -  Author: phishphreek@gmail.com
   -->
 
 <!--
-  -  Server 2008 DHCP IPv4 Decoder (must go first)
+       -  Server 2008 DHCP IPv4 Decoder (must go first)
   -  ID,Date,Time,Description,IP Address,Host Name,MAC Address,User Name, TransactionID, QResult,Probationtime, CorrelationID.
   -  24,3/10/2009,0:00:46,Database Cleanup Begin,,,,
   -  0,3/10/2009,0:00:46,DNS Update Request,201.10.168.192,OPS03W034.,,
 -->
 
 <decoder name="ms-dhcp-ipv4">
-  <prematch>^\d\d,\d+/\d+/\d\d\d\d,\d+:\d+:\d+,|</prematch>
-  <prematch>^\d\d,\d+/\d+/\d\d,\d+:\d+:\d+,</prematch>
-  <regex>^(\d\d),\d+/\d+/\d\d\d*,\d+:\d+:\d+,(\w+),(\S+)</regex>
+  <prematch_pcre2>^\d{2},\d+?/\d+?/\d{4},\d+?:\d+?:\d+?,|</prematch_pcre2>
+  <prematch_pcre2>^\d{2},\d+?/\d+?/\d{2},\d+?:\d+?:\d+?,</prematch_pcre2>
+  <pcre2>^(\d{2}),\d+?/\d+?/\d{2,},\d+?:\d+?:\d+?,([A-Za-z0-9@_-]+?),(\S+)</pcre2>
   <order>id,extra_data,srcip</order>
 </decoder>
 
 <!--
-  -  Server 2008 DHCP IPv6 Decoder (must go second)
+       -  Server 2008 DHCP IPv6 Decoder (must go second)
   -  ID,Date,Time,Description,IPV6 Address,Host Name,Error Code, Duid Length, Duid Bytes(Hex),User Name.
 -->
 <decoder name="ms-dhcp-ipv6">
-  <prematch>^\d\d\d\d\d,\d\d/\d\d/\d\d,\d\d:\d\d:\d\d,</prematch>
-  <regex>^(\d\d\d\d\d),</regex>
+  <prematch_pcre2>^\d{5},\d{2}/\d{2}/\d{2},\d{2}:\d{2}:\d{2},</prematch_pcre2>
+  <pcre2>^(\d{5}),</pcre2>
   <order>id</order>
 </decoder>
+
 

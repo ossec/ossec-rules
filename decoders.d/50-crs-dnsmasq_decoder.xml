@@ -1,0 +1,16 @@
+
+<!-- dnsmasq -->
+<decoder name="dnsmasq">
+  <!--<program_name>^dnsmasq</program_name>-->
+  <prematch_pcre2>^dnsmasq</prematch_pcre2>
+</decoder>
+
+<decoder name="dnsmasq2">
+  <parent>dnsmasq</parent>
+  <pcre2 offset="after_parent">^\[\d+\]: \d+ (\S+)/\d+ (\S+) (\S+) to (\S+)|</pcre2>
+  <pcre2>^\[\d+\]: \d+ (\S+)/\d+ (\S+) (\S+) from (\S+)|</pcre2>
+  <pcre2>^\[\d+\]: \d+ (\S+)/\d+ (\S+) (\S+) is (\S+)</pcre2>
+  <order>srcip, action, url, extra_data</order>
+</decoder>
+
+

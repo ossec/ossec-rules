@@ -1,39 +1,40 @@
 <!-- Grandstream HT502 VoIP gateway decoder
-Author and (c): Michael Starks, 2014 -->
+     Author and (c): Michael Starks, 2014 -->
 
 <!-- HT502: [00:0B:82:14:5B:94] Transport error (-1) for transaction 2677 -->
 
 <decoder name="grandstream-ata">
- <prematch>^HT286: [\w\w:\w\w:\w\w:\w\w:\w\w:\w\w]\p*\.+\p* |</prematch>
- <prematch>^HT502: [\w\w:\w\w:\w\w:\w\w:\w\w:\w\w]\p*\.+\p* |</prematch>
- <prematch>^HT503: [\w\w:\w\w:\w\w:\w\w:\w\w:\w\w]\p*\.+\p* </prematch>
+ <prematch_pcre2>^HT286: \[\w\w:\w\w:\w\w:\w\w:\w\w:\w\w\][()*+,.:;\<=>?\[\]!"'#%&$|{}-]*?.+[()*+,.:;\<=>?\[\]!"'#%&$|{}-]* |</prematch_pcre2>
+ <prematch_pcre2>^HT502: \[\w\w:\w\w:\w\w:\w\w:\w\w:\w\w\][()*+,.:;\<=>?\[\]!"'#%&$|{}-]*?.+[()*+,.:;\<=>?\[\]!"'#%&$|{}-]* |</prematch_pcre2>
+ <prematch_pcre2>^HT503: \[\w\w:\w\w:\w\w:\w\w:\w\w:\w\w\][()*+,.:;\<=>?\[\]!"'#%&$|{}-]*?.+[()*+,.:;\<=>?\[\]!"'#%&$|{}-]* </prematch_pcre2>
 </decoder>
 
 <decoder name="grandstream-registration">
  <parent>grandstream-ata</parent>
- <prematch>Received </prematch>
- <regex offset="after_prematch">^(\d+) response for transaction (\d+)\((\w+)\)$</regex>
+ <prematch_pcre2>Received </prematch_pcre2>
+ <pcre2 offset="after_prematch">^(\d+) response for transaction (\d+?)\(([A-Za-z0-9@_-]+)\)$</pcre2>
  <order>status, id, action</order>
 </decoder>
 
 <decoder name="grandstream-fts-registered">
  <parent>grandstream-ata</parent>
- <prematch>Account </prematch>
- <regex offset="after_prematch">^(\d+) (registered), tried \d+; Next registration in \d+ seconds \(\d+/\d+\) on (\.+)$</regex>
+ <prematch_pcre2>Account </prematch_pcre2>
+ <pcre2 offset="after_prematch">^(\d+) (registered), tried \d+; Next registration in \d+ seconds \(\d+/\d+\) on (.+)$</pcre2>
  <order>id, status, extra_data</order>
  <fts>name, location, extra_data</fts>
 </decoder>
 
 <decoder name="grandstream-incoming-cid">
  <parent>grandstream-ata</parent>
- <prematch>Vinetic::</prematch>
- <regex offset="after_prematch">^(startRing) with CID, Attempting to deliver CID (\d+) on port \d+$</regex>
+ <prematch_pcre2>Vinetic::</prematch_pcre2>
+ <pcre2 offset="after_prematch">^(startRing) with CID, Attempting to deliver CID (\d+) on port \d+$</pcre2>
  <order>action, id</order>
 </decoder>
 
 <decoder name="grandstream-outgoing-call">
  <parent>grandstream-ata</parent>
- <regex offset="after_parent">^(Dialing) (\d+)$</regex>
+ <pcre2 offset="after_parent">^(Dialing) (\d+)$</pcre2>
  <order>action, id</order>
 </decoder>
+
 

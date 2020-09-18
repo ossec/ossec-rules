@@ -1,37 +1,38 @@
 <!-- ossec decoder.
-  - Deals with ossec internal messages.
+       - Deals with ossec internal messages.
   -->
 <decoder name="ossec">
-  <prematch>^ossec: </prematch>
+  <prematch_pcre2>^ossec: </prematch_pcre2>
   <type>ossec</type>
 </decoder>
 
 <decoder name="ossec-logcollector">
   <type>ossec</type>
-  <prematch>^\d\d\d\d/\d\d/\d\d \d\d:\d\d:\d\d ossec-logcollector</prematch>
-  <regex offset="after_prematch">^\(\d+\): (\.)</regex>
+  <prematch_pcre2>^\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2} ossec-logcollector</prematch_pcre2>
+  <pcre2 offset="after_prematch">^\(\d+?\): (.)</pcre2>
   <order>extra_data</order>
 </decoder>
 
 <decoder name="ossec-agent">
   <parent>ossec</parent>
   <type>ossec</type>
-  <prematch offset="after_parent">^Agent started:</prematch>
-  <regex offset="after_prematch">^ '(\S+)'</regex>
+  <prematch_pcre2 offset="after_parent">^Agent started:</prematch_pcre2>
+  <pcre2 offset="after_prematch">^ '(\S+\S)'</pcre2>
   <order>extra_data</order>
   <fts>name, location, extra_data</fts>
 </decoder>
 
 <decoder name="ossec-alert1">
    <parent>ossec</parent>
-   <prematch>^ossec: Alert Level:</prematch>
+   <prematch_pcre2>^ossec: Alert Level:</prematch_pcre2>
    <plugin_decoder>OSSECAlert_Decoder</plugin_decoder>
 </decoder>
 
 <decoder name="ossec-alert">
-  <program_name>^ossec$</program_name>
+  <program_name_pcre2>^ossec$</program_name_pcre2>
   <plugin_decoder>OSSECAlert_Decoder</plugin_decoder>
 </decoder>
+
 
 <!-- decoder for active responses as logged by an OSSEC agent or server
 
@@ -43,8 +44,9 @@ Sat May  7 03:27:57 CDT 2011 /var/ossec/active-response/bin/firewall-drop.sh del
 -->
 
 <decoder name="ar_log">
-  <prematch>^\w\w\w \w+\s+\d+ \d\d:\d\d:\d\d \w+ \d+ /\S+/active-response</prematch>
-  <regex offset="after_prematch">/bin/(\S+) (\S+) - (\S+) (\d+.\d+) (\d+)</regex>
+  <prematch_pcre2>^[A-Za-z0-9@_-]{3} [A-Za-z0-9@_-]+?[ ]+?\d+? \d{2}:\d{2}:\d{2} [A-Za-z0-9@_-]+? \d+? /\S+/active-response</prematch_pcre2>
+  <pcre2 offset="after_prematch">/bin/(\S+) (\S+) - (\S+) (\d+?\.\d+?) (\d+)</pcre2>
   <order>action, status, srcip, id, extra_data</order>
 </decoder>
+
 

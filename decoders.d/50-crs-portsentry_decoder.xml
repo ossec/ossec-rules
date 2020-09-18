@@ -1,19 +1,20 @@
 <!-- Portsentry -->
 <decoder name="portsentry">
-  <program_name>^portsentry</program_name>
+  <program_name_pcre2>^portsentry</program_name_pcre2>
 </decoder>
 
 <decoder name="portsentry-attackalert">
   <parent>portsentry</parent>
-  <prematch>attackalert: Connect from host: </prematch>
-  <regex offset="after_prematch">(\S+)/\S+ to (\S+) port: (\d+)$</regex>
+  <prematch_pcre2>attackalert: Connect from host: </prematch_pcre2>
+  <pcre2 offset="after_prematch">(\S+)/\S+ to (\S+) port: (\d+?)$</pcre2>
   <order>srcip,protocol,dstport</order>
 </decoder>
 
 <decoder name="portsentry-blocked">
   <parent>portsentry</parent>
-  <prematch>is already blocked. Ignoring$</prematch>
-  <regex>Host: (\S+) is</regex>
+  <prematch_pcre2>is already blocked\. Ignoring$</prematch_pcre2>
+  <pcre2>Host: (\S+) is</pcre2>
   <order>srcip</order>
 </decoder>
+
 

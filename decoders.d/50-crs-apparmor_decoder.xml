@@ -1,5 +1,5 @@
 <!-- apparmor
-  - Jun 24 10:35:29 hostname kernel: [49787.970285] audit: type=1400 audit(1403598929.839:88986): apparmor="ALLOWED" operation="getattr" profile="/usr/sbin/dovecot//null-1//null-2//null-4a6" name="/home/admin/mails/new/" pid=19973 comm="imap" requested_mask="r" denied_mask="r" fsuid=1003 ouid=1003
+       - Jun 24 10:35:29 hostname kernel: [49787.970285] audit: type=1400 audit(1403598929.839:88986): apparmor="ALLOWED" operation="getattr" profile="/usr/sbin/dovecot//null-1//null-2//null-4a6" name="/home/admin/mails/new/" pid=19973 comm="imap" requested_mask="r" denied_mask="r" fsuid=1003 ouid=1003
   - Jul 14 11:03:47 hostname kernel: [ 8665.951930] type=1400 audit(1405328627.702:54): apparmor="DENIED" operation="open" profile="/usr/bin/evince" name="/etc/xfce4/defaults.list" pid=16418 comm="evince" requested_mask="r" denied_mask="r" fsuid=1000 ouid=0
   - Jun 16 17:37:39 hostname kernel: [891880.587623] audit: type=1400 audit(1402933059.038:1681857): apparmor="ALLOWED" operation="exec" profile="/usr/sbin/dovecot//null-1fde//null-1fdf" name="/usr/lib/dovecot/pop3-login" pid=13903 comm="dovecot" requested_mask="x" denied_mask="x" fsuid=0 ouid=0 target="/usr/sbin/dovecot//null-1fde//null-1fdf//null-6b18"
   - Jun 16 17:37:39 hostname kernel: [891880.587957] audit: type=1400 audit(1402933059.038:1681858): apparmor="ALLOWED" operation="open" profile="/usr/sbin/dovecot//null-1fde//null-1fdf//null-6b18" name="/usr/lib/dovecot/libdovecot-login.so.0.0.0" pid=13903 comm="pop3-login" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
@@ -12,8 +12,9 @@
 
 <decoder name="apparmor">
   <parent>iptables</parent>
-  <prematch> apparmor=</prematch>
-  <regex> apparmor="(\S+)" operation="(\S+)"</regex>
+  <prematch_pcre2> apparmor=</prematch_pcre2>
+  <pcre2> apparmor="(\S+)" operation="(\S+)"</pcre2>
   <order>status, extra_data</order>
 </decoder>
+
 

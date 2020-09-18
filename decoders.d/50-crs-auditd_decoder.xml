@@ -31,70 +31,71 @@ type=PATH msg=audit(1273924468.947:179534): item=0 name=(null) inode=424783 dev=
 -->
 
 <decoder name="auditd">
-  <prematch>^type=</prematch>
+  <prematch_pcre2>^type=</prematch_pcre2>
 </decoder>
 
 <!-- SELinux -->
 <decoder name="auditd-selinux">
   <parent>auditd</parent>
-  <prematch offset="after_parent">^AVC </prematch>
-  <regex offset="after_parent">^(AVC) msg=audit\(\d\d\d\d\d\d\d\d\d\d.\d\d\d:(\d+)\): avc:  (\S+)  { \.+ } for  pid=\d+ comm="(\S+)" path="\S+" dev=\S+ ino=\d+ scontext=\S+ tcontext=\S+ tclass=\S+$</regex>
+  <prematch_pcre2 offset="after_parent">^AVC </prematch_pcre2>
+  <pcre2 offset="after_parent">^(AVC) msg=audit\(\d{10}\.\d{3}:(\d+?)\): avc:  (\S+)  \{ .+ \} for  pid=\d+? comm="(\S+)" path="\S+" dev=\S+ ino=\d+? scontext=\S+ tcontext=\S+ tclass=\S+$</pcre2>
   <order>action,id,status,extra_data</order>
 </decoder>
 
 <!-- syscall -->
 <decoder name="auditd-syscall">
   <parent>auditd</parent>
-  <prematch offset="after_parent">^SYSCALL </prematch>
-  <regex offset="after_parent">^(SYSCALL) msg=audit\(\d\d\d\d\d\d\d\d\d\d.\d\d\d:(\d+)\): arch=\w+ syscall=\d+ success=(\S+) exit=\S+ a0=\w+ a1=\w+ a2=\w+ a3=\w+ items=\d+ ppid=\d+ pid=\d+ auid=\d+ uid=\d+ gid=\d+ euid=\d+ suid=\d+ fsuid=\d+ egid=\d+ sgid=\d+ fsgid=\d+ tty=\S+ ses=\d+ comm="\S+" exe="(\.+)"</regex>
+  <prematch_pcre2 offset="after_parent">^SYSCALL </prematch_pcre2>
+  <pcre2 offset="after_parent">^(SYSCALL) msg=audit\(\d{10}\.\d{3}:(\d+?)\): arch=\w+ syscall=\d+ success=(\S+) exit=\S+ a0=\w+ a1=\w+ a2=\w+ a3=\w+ items=\d+ ppid=\d+ pid=\d+ auid=\d+ uid=\d+ gid=\d+ euid=\d+ suid=\d+ fsuid=\d+ egid=\d+ sgid=\d+ fsgid=\d+ tty=\S+ ses=\d+ comm="\S+" exe="(.+?)"</pcre2>
   <order>action,id,status,extra_data</order>
 </decoder>
 
 <!-- config -->
 <decoder name="auditd-config">
   <parent>auditd</parent>
-  <prematch offset="after_parent">^CONFIG_CHANGE </prematch>
-  <regex offset="after_parent">^(CONFIG_CHANGE) msg=audit\(\d\d\d\d\d\d\d\d\d\d.\d\d\d:(\d+)\): auid=\d+ ses=\d+ op="\.+" path="(\.+)" key="\S+" list=\d+ res=\d+$</regex>
+  <prematch_pcre2 offset="after_parent">^CONFIG_CHANGE </prematch_pcre2>
+  <pcre2 offset="after_parent">^(CONFIG_CHANGE) msg=audit\(\d{10}\.\d{3}:(\d+?)\): auid=\d+? ses=\d+? op=".+" path="(.+)" key="\S+" list=\d+? res=\d+?$</pcre2>
   <order>action,id,extra_data</order>
 </decoder>
 
 <!-- path (will only decode if name is not null)-->
 <decoder name="auditd-path">
   <parent>auditd</parent>
-  <prematch offset="after_parent">^PATH </prematch>
-  <regex offset="after_parent">^(PATH) msg=audit\(\d\d\d\d\d\d\d\d\d\d.\d\d\d:(\d+)\): item=\d+ name="(\.+)" inode=\d+ dev=\S+ mode=\d+ ouid=\d+ ogid=\d+ rdev=\S+</regex>
+  <prematch_pcre2 offset="after_parent">^PATH </prematch_pcre2>
+  <pcre2 offset="after_parent">^(PATH) msg=audit\(\d{10}\.\d{2}:(\d+?)\): item=\d+? name="(.+)" inode=\d+? dev=\S+ mode=\d+? ouid=\d+? ogid=\d+? rdev=\S+</pcre2>
   <order>action,id,extra_data</order>
 </decoder>
 
 <!-- user-related -->
 <decoder name="auditd-user">
   <parent>auditd</parent>
-  <regex offset="after_parent">^(USER_\S+) msg=audit\(\d\d\d\d\d\d\d\d\d\d.\d\d\d:(\d+)\): user pid=\d+ uid=\d+ auid=\d+|</regex>
-  <regex>^(CRED_\S+) msg=audit\(\d\d\d\d\d\d\d\d\d\d.\d\d\d:(\d+)\): user pid=\d+ uid=\d+ auid=\d+</regex>
+  <pcre2 offset="after_parent">^(USER_\S+) msg=audit\(\d{10}\.\d{3}:(\d+?)\): user pid=\d+? uid=\d+? auid=\d+|</pcre2>
+  <pcre2>^(CRED_\S+) msg=audit\(\d{10}\.\d{3}:(\d+?)\): user pid=\d+? uid=\d+? auid=\d+</pcre2>
   <order>action,id</order>
 </decoder>
 
 <decoder name="auditd-user">
   <parent>auditd</parent>
-  <regex offset="after_regex"> acct="(\.+)" : exe="(\.+)" \(hostname=\S+, addr=(\S+), terminal=\S+$</regex>
+  <pcre2 offset="after_regex"> acct="(.+)" : exe="(.+)" \(hostname=\S+, addr=(\S+), terminal=\S+$</pcre2>
   <order>user,extra_data,srcip</order>
 </decoder>
 
 <decoder name="auditd-user">
   <parent>auditd</parent>
-  <regex offset="after_regex"> ses=\d+ subj=\S+ msg='\.+ acct="(\.+)" exe="(\.+)" hostname=\S+ addr=(\S+) terminal=\S+ res=(\S+)$</regex>
+  <pcre2 offset="after_regex"> ses=\d+? subj=\S+ msg='.+ acct="(.+)" exe="(.+)" hostname=\S+ addr=(\S+) terminal=\S+ res=(\S+)$</pcre2>
   <order>user,extra_data,srcip,status</order>
 </decoder>
 
 <decoder name="auditd-user">
   <parent>auditd</parent>
-  <regex offset="after_regex"> subj=\S+ msg='\.+ acct="(\.+)" \p*\s*exe="(\.+)" \(hostname=\S+, addr=(\S+), terminal=\S+ res=(\S+)\)'$</regex>
+  <pcre2 offset="after_regex"> subj=\S+ msg='.+ acct="(.+)" :*[ ]*?exe="(.+)" \(hostname=\S+, addr=(\S+), terminal=\S+ res=(\S+)\)'$</pcre2>
   <order>user,extra_data,srcip,status</order>
 </decoder>
 
 <decoder name="auditd-user">
   <parent>auditd</parent>
-  <regex offset="after_regex"> subj=\S+ msg='\.+ exe="(\.+)" \(hostname=\S+, addr=(\S+), terminal=\S+ res=(\S+)\)'$</regex>
+  <pcre2 offset="after_regex"> subj=\S+ msg='.+ exe="(.+)" \(hostname=\S+, addr=(\S+), terminal=\S+ res=(\S+)\)'$</pcre2>
   <order>extra_data,srcip,status</order>
 </decoder>
+
 

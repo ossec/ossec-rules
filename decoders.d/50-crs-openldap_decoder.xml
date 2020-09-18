@@ -1,5 +1,5 @@
 <!-- OpenLDAP decoder.
-  - Jan 11 09:26:57 hostname slapd[20872]: conn=999999 fd=64 ACCEPT from IP=10.10.248.27:33957 (IP=10.10.241.77:389)
+       - Jan 11 09:26:57 hostname slapd[20872]: conn=999999 fd=64 ACCEPT from IP=10.10.248.27:33957 (IP=10.10.241.77:389)
   - Jan 11 09:26:57 hostname slapd[20872]: conn=999999 op=0 BIND dn="uid=example,ou=People,dc=example,dc=com" method=128
   - Jan 11 09:26:57 hostname slapd[20872]: conn=999999 op=0 RESULT tag=97 err=49 text=
         ^- Login Failed
@@ -13,22 +13,22 @@
 
   -->
 <decoder name="openldap">
-    <program_name>^slapd</program_name>
+    <program_name_pcre2>^slapd</program_name_pcre2>
     <accumulate/>
 </decoder>
 
 <decoder name="openldap-connect">
     <parent>openldap</parent>
-    <prematch>ACCEPT</prematch>
-    <regex>^conn=(\d+) fd=\d+ ACCEPT from IP=(\S+):</regex>
+    <prematch_pcre2>ACCEPT</prematch_pcre2>
+    <pcre2>^conn=(\d+) fd=\d+ ACCEPT from IP=(\S+):</pcre2>
     <order>id, srcip</order>
     <accumulate/>
 </decoder>
 
 <decoder name="openldap-bind">
     <parent>openldap</parent>
-    <prematch>BIND </prematch>
-    <regex>^conn=(\d+) op=\d+ BIND dn="\w+=(\w+),</regex>
+    <prematch_pcre2>BIND </prematch_pcre2>
+    <pcre2>^conn=(\d+) op=\d+ BIND dn="[A-Za-z0-9@_-]+=([A-Za-z0-9@_-]+),</pcre2>
     <order>id, dstuser</order>
     <accumulate/>
 </decoder>
@@ -36,8 +36,9 @@
 <decoder name="openldap-result">
     <accumulate/>
     <parent>openldap</parent>
-    <prematch> RESULT </prematch>
-    <regex>^conn=(\d+) op=\d+ RESULT </regex>
+    <prematch_pcre2> RESULT </prematch_pcre2>
+    <pcre2>^conn=(\d+) op=\d+ RESULT </pcre2>
     <order>id</order>
 </decoder>
+
 

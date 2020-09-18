@@ -1,39 +1,47 @@
 <!-- Asterisk logs
-  - Examples:
+       - Examples:
   - Dec 16 18:02:04 asterisk1 asterisk[31774]: NOTICE[31787]:
   chan_sip.c:11242 in handle_request_register: Registration from
   '"503"<sip:503@192.168.1.107>' failed for '192.168.1.137' - Wrong
   password
   -->
 <decoder name="asterisk">
-  <program_name>^asterisk</program_name>
+  <program_name_pcre2>^asterisk</program_name_pcre2>
 </decoder>
 
 <decoder name="asterisk-hijacking">
   <parent>asterisk</parent>
-  <prematch>^WARNING[\d+]: \S+ in \S+: Don't know </prematch>
-  <regex offset="after_prematch">^\S+ how to respond via '(\w+/\d.\d/\w+)'</regex>
+  <prematch_pcre2>^WARNING\[\d+?\]: \S+ in \S+: Don't know </prematch_pcre2>
+  <pcre2 offset="after_prematch">^\S+ how to respond via '([A-Za-z0-9@_-]+/\d\.\d/[A-Za-z0-9@_-]+)'</pcre2>
   <order>user</order>
 </decoder>
 
 <decoder name="asterisk-denied">
   <parent>asterisk</parent>
-  <prematch>^NOTICE[\d+]: \S+ in \S+: Registration from </prematch>
-  <regex offset="after_prematch">^\S+ failed for '(\S+)'</regex>
-  <order>srcip</order>
+  <prematch_pcre2>^NOTICE\[\d+?\]: \S+ in \S+: Registration from </prematch_pcre2>
+  <pcre2 offset="after_prematch">^'.+' failed for '(\S+):(\d+?)'|^'.+' failed for '(\S+)'</pcre2>
+  <order>srcip,srcport</order>
 </decoder>
 
 <decoder name="asterisk-denied2">
   <parent>asterisk</parent>
-  <prematch>Registration from </prematch>
-  <regex offset="after_prematch">failed for '(\S+)'</regex>
-  <order>srcip</order>
+  <prematch_pcre2>Registration from </prematch_pcre2>
+  <pcre2 offset="after_prematch">failed for '(\S+):(\d+?)'|failed for '(\S+)'</pcre2>
+  <order>srcip,srcport</order>
+</decoder>
+
+<decoder name="asterisk-denied3">
+  <parent>asterisk</parent>
+  <prematch_pcre2>^NOTICE\[\d+?\]\[[A-Za-z0-9@_-]+?\]: \S+ in \S+: Call from </prematch_pcre2>
+  <pcre2 offset="after_prematch">^'\S*' \((\S+):(\d+?)\) to extension '(\S+)' rejected because extension not found in context '(\S+)'\.$</pcre2>
+  <order>srcip, srcport, extra_data, extra_data</order>
 </decoder>
 
 <decoder name="asterisk-iax-authentication-denied">
   <parent>asterisk</parent>
-  <prematch>^NOTICE[\d+]: \S+ in \S+: Host </prematch>
-  <regex offset="after_prematch">^(\S+) failed MD5 authentication for (\S+)</regex>
+  <prematch_pcre2>^NOTICE\[\d+\]: \S+ in \S+: Host </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+) failed MD5 authentication for (\S+)</pcre2>
   <order>srcip, user</order>
 </decoder>
+
 

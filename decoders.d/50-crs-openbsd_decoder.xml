@@ -1,48 +1,77 @@
 <!-- OpenBSD kernel messages -->
 <decoder name="bsd_kernel">
-  <program_name>^/bsd</program_name>
+  <program_name_pcre2>^/bsd</program_name_pcre2>
 </decoder>
 
 <decoder name="bsd_arp">
   <parent>bsd_kernel</parent>
-  <prematch offset="after_parent">^arp </prematch>
-  <regex offset="after_prematch"> for (\S+) by (\S+) on \S+</regex>
+  <prematch_pcre2 offset="after_parent">^arp </prematch_pcre2>
+  <pcre2 offset="after_prematch"> for (\S+) by (\S+) on \S+</pcre2>
   <order>dstip, extra_data</order>
 </decoder>
 
 <!-- OpenBSD deluser
-  -  2014-02-21T10:22:55.134355-05:00 arrakis userdel[23023]: user removed: name=dac
+       -  2014-02-21T10:22:55.134355-05:00 arrakis userdel[23023]: user removed: name=dac
 -->
 
 <decoder name="open-userdel">
-  <program_name>userdel</program_name>
-  <regex>user removed: name=(\S+)$</regex>
+  <program_name_pcre2>userdel</program_name_pcre2>
+  <pcre2>user removed: name=(\S+)$</pcre2>
   <order>srcuser</order>
 </decoder>
 
 
 
 <!-- OpenBSD mountd decoder
-- Apr 11 20:01:02 ix mountd[11618]: Refused mount RPC from host 192.168.17.10 port 45659
+     - Apr 11 20:01:02 ix mountd[11618]: Refused mount RPC from host 192.168.17.10 port 45659
 -->
 
 <decoder name="mountd">
-  <program_name>^mountd</program_name>
+  <program_name_pcre2>^mountd</program_name_pcre2>
 </decoder>
 
 <decoder name="mountd-host">
   <parent>mountd</parent>
-  <prematch>from host </prematch>
-  <regex offset="after_prematch">(\S+) port \d+$</regex>
+  <prematch_pcre2>from host </prematch_pcre2>
+  <pcre2 offset="after_prematch">(\S+) port \d+?$</pcre2>
   <order>srcip</order>
 </decoder>
 
+
+<!-- nss ldap decoders
+     - Jun 26 08:19:25 servername sh: nss_ldap: reconnecting to LDAP server (sleeping 32 seconds)...
+- Aug 16 10:58:12 client nscd: nss_ldap: failed to bind to LDAP server ldap://ldap.example.com: Can't contact LDAP server
+-->
+<!--
+     <decoder name="nss-ldap">
+  <program_name_pcre2>^sh$|^nscd$</program_name_pcre2>
+  <prematch_pcre2>^nss_ldap</prematch_pcre2>
+</decoder>
+
+<decoder name="ldap-server">
+  <parent>nss-ldap</parent>
+  <prematch_pcre2> server </prematch_pcre2>
+  <pcre2 offset="after_prematch">ldap://(\S+):</pcre2>
+  <order>system_name</order>
+</decoder>
+-->
+
 <!-- OpenBSD groupdel
-  - May 28 09:15:43 ix groupdel[25984]: group deleted: name=_dbus
+       - May 28 09:15:43 ix groupdel[25984]: group deleted: name=_dbus
 -->
 <decoder name="groupdel">
-  <program_name>groupdel</program_name>
-  <regex>^group deleted: name=(\S+)$</regex>
+  <program_name_pcre2>groupdel</program_name_pcre2>
+  <pcre2>^group deleted: name=(\S+)$</pcre2>
   <order>extra_data</order>
 </decoder>
+
+
+<!-- OpenBSD httpd -->
+<decoder name="openbsd-httpd">
+  <prematch_pcre2> \[\d+/[A-Za-z0-9@_-]+/\d+:\d+:\d+:\d+ -\d+\] "</prematch_pcre2>
+  <pcre2>^(\S+) (\S+) \S+ \S+ \[\d+/[A-Za-z0-9@_-]+/\d+:\d+:\d+:\d+ -\d+\] "(\S+) (\S+) HTTP/\d\.\d" (\d+?) \d$</pcre2>
+  <order>url, srcip, protocol, url, status</order>
+  <type>web-log</type>
+</decoder>
+
 

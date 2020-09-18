@@ -1,0 +1,10 @@
+<!-- MHN - Json log decoder - Dionaea -->
+<!-- include /var/log/mhn/mhn-json.log to ossec.conf -->
+<!-- {"direction": "inbound", "protocol": "ip", "ids_type": "network", "timestamp": "2018-09-14T11:02:54.215411", "dionaea_action": "reject", "type": "dionaea.connections", "app": "dionaea", "src_ip": "16.10.10.10", "vendor_product": "Dionaea", "dest_port": 365, "signature": "Connection to Honeypot", "src_port": 45302, "dest_ip": "16.10.10.11", "sensor": "5e7031cf-b74d-22f9-57e0-254166752457", "transport": "tcp", "severity": "high"} -->
+<decoder name="dionaea">
+  <prematch_pcre2>dionaea\.connections</prematch_pcre2>
+  <pcre2>^\{"direction": "(\S+)", "protocol": "(\S+)", "ids_type": "\S+", "timestamp": "\d{4}-\d{2}-\d{2}\w\d{2}:\d{2}:\d{2}.\d+", "dionaea_action": "(\S+)", "type": "dionaea\.connections", "app": "dionaea", "src_ip": "(\S+)", "vendor_product": "Dionaea", "dest_port": (\d+), "signature": ".+", "src_port": (\d+?), "dest_ip": "(\S+)", "sensor": \S+, "transport": "\S+", "severity": "\S+"\}</pcre2>
+  <order>extra_data, protocol, action, srcip, dstport, srcport, dstip</order>
+</decoder>
+
+

@@ -1,5 +1,5 @@
 <!-- Windows decoder
-  - Will extract extra_data (as win source),action (as win category), id,
+       - Will extract extra_data (as win source),action (as win category), id,
   - username and computer name (as system_name).
   - Examples:
   - WinEvtLog: Application: INFORMATION(0x00000064): ESENT:
@@ -18,14 +18,14 @@
   -->
 <decoder name="windows">
   <type>windows</type>
-  <program_name>^WinEvtLog</program_name>
+  <program_name_pcre2>^WinEvtLog</program_name_pcre2>
 </decoder>
 
 <decoder name="windows1">
   <type>windows</type>
   <parent>windows</parent>
-  <regex offset="after_parent">^\.+: (\w+)\((\d+)\): (\.+): </regex>
-  <regex>(\.+): \.+: (\S+): </regex>
+  <pcre2 offset="after_parent">^.+: ([A-Za-z0-9@_-]+?)\((\d+?)\): (.+): </pcre2>
+  <pcre2>(.+): .+: (\S+): </pcre2>
   <order>status, id, extra_data, user, system_name</order>
   <fts>name, location, system_name</fts>
 </decoder>
@@ -33,21 +33,22 @@
 <decoder name="windows1">
   <type>windows</type>
   <parent>windows</parent>
-  <regex> Source Network Address: (\S+)</regex>
+  <pcre2> Source Network Address: (\S+)</pcre2>
   <order>srcip</order>
 </decoder>
+
 
 <decoder name="windows1">
   <type>windows</type>
   <parent>windows</parent>
-  <regex> Account Name:\s+(\w+\.+)\s+Account</regex>
+  <pcre2> Account Name:[ ]+?([A-Za-z0-9@_-]+?.+)[ ]+?Account</pcre2>
   <order>user</order>
 </decoder>
 
 <decoder name="windows1">
   <type>windows</type>
   <parent>windows</parent>
-  <regex>Account Domain:\s\s+(\w\.+)\s\s+Logon ID:</regex>
+  <pcre2>Account Domain:[ ][ ]+?([A-Za-z0-9@_-].+)[ ][ ]+?Logon ID:</pcre2>
   <order>extra_data</order>
 </decoder>
 

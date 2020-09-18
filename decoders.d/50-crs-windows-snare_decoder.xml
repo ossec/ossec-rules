@@ -1,5 +1,5 @@
 <!-- Windows decoder - Snare format.
-  - Will extract extra_data (as win source), action (as category), id,
+       - Will extract extra_data (as win source), action (as category), id,
   - username and computer name (as system_name).
   -
   - These logs must be tab-separated (as specified in the Snare format)
@@ -25,10 +25,11 @@
   -->
 <decoder name="windows-snare">
   <type>windows</type>
-  <prematch>^MSWinEventLog\t\d\t\.+\t\d+\t\w\w\S+ \w\w\w \d\d \d\d</prematch>
-  <regex offset="after_prematch">^:\d\d:\d\d \d\d\d\d\t(\d+)\t(\.+)</regex>
-  <regex>\t(\.+)\t\.+\t(\.+)\t(\.+)\t</regex>
+  <prematch_pcre2>^MSWinEventLog\t\d\t.+\t\d+?\t[A-Za-z0-9@_-]{3}\S+ [A-Za-z0-9@_-]{3} \d{2} \d{2}</prematch_pcre2>
+  <pcre2 offset="after_prematch">^:\d{2}:\d{2} \d{4}\t(\d+?)\t(.+)</pcre2>
+  <pcre2>\t(.+)\t.+\t(.+)\t(.+)\t</pcre2>
   <order>id, extra_data, user, status, system_name</order>
   <fts>name, id, location, user, system_name</fts>
 </decoder>
+
 

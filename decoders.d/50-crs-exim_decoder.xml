@@ -1,5 +1,5 @@
 <!-- Exim
-  - Examples:
+       - Examples:
   - 2017-01-23 03:44:14 dovecot_login authenticator failed for (hydra) [10.101.1.18]:35686: 535 Incorrect authentication data (set_id=user)
   - 2017-01-24 05:22:29 dovecot_plain authenticator failed for (test) [::1]:39454: 535 Incorrect authentication data (set_id=test)
   - 2017-01-24 03:09:46 SMTP connection from [10.101.1.10]:55010 (TCP/IP connection count = 1)
@@ -9,29 +9,30 @@
 
 <decoder name="exim-authfailed">
   <parent>windows-date-format</parent>
-  <prematch offset="after_parent">authenticator failed</prematch>
-  <regex offset="after_prematch">[(\S+)]:\d+: \d+ Incorrect authentication data \(set_id=(\w+)\)</regex>
+  <prematch_pcre2 offset="after_parent">authenticator failed</prematch_pcre2>
+  <pcre2 offset="after_prematch">\[(\S+)\]:\d+: \d+ Incorrect authentication data \(set_id=([A-Za-z0-9@_-]+?)\)</pcre2>
   <order>srcip,user</order>
 </decoder>
 
 <decoder name="exim-connect">
   <parent>windows-date-format</parent>
-  <prematch offset="after_parent">^SMTP connection from </prematch>
-  <regex offset="after_prematch">[(\S+)]:\d+ \(TCP/IP connection count</regex>
+  <prematch_pcre2 offset="after_parent">^SMTP connection from </prematch_pcre2>
+  <pcre2 offset="after_prematch">\[(\S+)\]:\d+ \(TCP/IP connection count</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="exim-disconnect">
   <parent>windows-date-format</parent>
-  <prematch offset="after_parent">^SMTP connection from </prematch>
-  <regex offset="after_prematch">[(\S+)]:\d+ lost</regex>
+  <prematch_pcre2 offset="after_parent">^SMTP connection from </prematch_pcre2>
+  <pcre2 offset="after_prematch">\[(\S+)\]:\d+ lost</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="exim-syntax-errors">
   <parent>windows-date-format</parent>
-  <prematch offset="after_parent">^SMTP call from </prematch>
-  <regex offset="after_prematch">[(\S+)]:\d+ dropped: too many syntax or protocol errors</regex>
+  <prematch_pcre2 offset="after_parent">^SMTP call from </prematch_pcre2>
+  <pcre2 offset="after_prematch">\[(\S+)\]:\d+ dropped: too many syntax or protocol errors</pcre2>
   <order>srcip</order>
 </decoder>
+
 
