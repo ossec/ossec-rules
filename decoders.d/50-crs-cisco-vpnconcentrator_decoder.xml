@@ -1,13 +1,14 @@
 <!-- Cisco VPN Concentrator
-  - Will exatract srcip and username.
+       - Will extract srcip and username.
   - Examples:
   -
   - Jan 8 09:10:37 vpn.example.com 11504 01/08/2007 09:10:37.780 SEV=3 AUTH/5 RPT=124 192.168.0.1 Authentication rejected: Reason = Unspecified handle = 805, server = auth.example.com, user = testuser, domain = <not specified>
   11504 01/08/2007 09:10:37.780 SEV=3
   -->
 <decoder name="cisco-vpn-concentrator">
-  <prematch>^\d+ \d\d/\d\d/\d\d\d\d \S+ SEV=\d </prematch>
-  <regex offset="after_prematch">^(\S+) RPT=\d+ (\S+) </regex>
+  <prematch_pcre2>^\d+? \d{2}/\d{2}/\d{4} \S+ SEV=\d </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+) RPT=\d+? (\S+) </pcre2>
   <order>id, srcip</order>
 </decoder>
+
 
