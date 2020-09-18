@@ -1,5 +1,5 @@
 <!-- Mail scanner
-  - Will extract the srcip/action
+       - Will extract the srcip/action
   - Examples:
   - MailScanner[24112]: Message k7B9Mc6b015925 from
   68.171.145.34 (nilsenator@hotmail.com) to yyyyy.no is spam, SpamAssassin
@@ -12,13 +12,14 @@
   - MailScanner[29107]: Message j0EMandY027564 from xxx.xxx.xxx.xxx(xxxxx@xxxxx.ie) to xxxxx.ie is not spam
   -->
 <decoder name="mailscanner">
-  <program_name>^MailScanner</program_name>
+  <program_name_pcre2>^MailScanner</program_name_pcre2>
 </decoder>
 
 <decoder name="mailscanner-ip">
   <parent>mailscanner</parent>
-  <prematch>^Message \S+ from </prematch>
-  <regex offset="after_prematch">^(\S+) \S+ to \S+ is (\w+)</regex>
+  <prematch_pcre2>^Message \S+ from </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+) \S+ to \S+ is (\w+)</pcre2>
   <order>srcip, action</order>
 </decoder>
+
 
