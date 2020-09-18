@@ -1,5 +1,5 @@
 <!-- Apache decoder.
-  - Updated by jesus@wazuh.com. 2016/02/17
+       - Updated by jesus@wazuh.com. 2016/02/17
   - Will extract the srcip
   - Examples:
   - Without ID: Will extract the srcip and srcport (when it is available)
@@ -23,38 +23,40 @@
       - [Tue Sep 30 12:11:21.258612 2014] [ssl:error] [pid 30473] AH02032: Hostname www.example.com provided via SNI and hostname ssl://www.example.com provided via HTTP are different
 -->
 
+
 <decoder name="apache-errorlog">
-    <program_name>^httpd</program_name>
+    <program_name_pcre2>^httpd</program_name_pcre2>
 </decoder>
 
 <decoder name="apache-errorlog">
-    <prematch>^[warn] |^[notice] |^[error] </prematch>
+    <prematch_pcre2>^\[warn\] |^\[notice\] |^\[error\] </prematch_pcre2>
 </decoder>
 
 <decoder name="apache-errorlog">
-    <prematch>^[\w+ \w+ \d+ \d+:\d+:\d+.\d+ \d+] [\S+:warn] |^[\w+ \w+ \d+ \d+:\d+:\d+.\d+ \d+] [\S+:notice] |^[\w+ \w+ \d+ \d+:\d+:\d+.\d+ \d+] [\S*:error] |^[\w+ \w+ \d+ \d+:\d+:\d+.\d+ \d+] [\S+:info] </prematch>
+    <prematch_pcre2>^\[\w+ \w+ \d+ \d+:\d+:\d+\.\d+ \d+\] (?:\[\S+:warn\]|\[\S+:notice\]|\[\S*:error\]|\[\S+:info\]) </prematch_pcre2>
 </decoder>
-
 
 <decoder name="apache24-errorlog-ip-port">
     <parent>apache-errorlog</parent>
-    <prematch offset="after_parent">[client \S+:\d+] \S+:</prematch>
-    <regex offset="after_parent">[client (\S+):(\d+)] (\S+): </regex>
+    <prematch_pcre2 offset="after_parent">\[client \S+:\d+?\] \S+:</prematch_pcre2>
+    <pcre2 offset="after_parent">\[client (\S+):(\d+?)\] (\S+): </pcre2>
     <order>srcip,srcport,id</order>
 </decoder>
 
 <decoder name="apache24-errorlog-ip">
     <parent>apache-errorlog</parent>
-    <prematch offset="after_parent">[client \S+] \S+:</prematch>
-    <regex offset="after_parent">[client (\S+)] (\S+): </regex>
+    <prematch_pcre2 offset="after_parent">\[client \S+\] \S+:</prematch_pcre2>
+    <pcre2 offset="after_parent">\[client (\S+)\] (\S+): </pcre2>
     <order>srcip,id</order>
 </decoder>
 
 
 <decoder name="apache-errorlog-ip">
     <parent>apache-errorlog</parent>
-    <prematch offset="after_parent">[client</prematch>
-    <regex offset="after_prematch">^ (\S+):(\d+)] |^ (\S+)] </regex>
+    <prematch_pcre2 offset="after_parent">\[client</prematch_pcre2>
+    <pcre2 offset="after_prematch">^ (\S+):(\d+?)\] |^ (\S+)\] </pcre2>
     <order>srcip,srcport</order>
 </decoder>
+
+
 
