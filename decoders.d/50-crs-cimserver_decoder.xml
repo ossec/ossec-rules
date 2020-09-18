@@ -1,17 +1,18 @@
 <!--
- - cimserver decoder
+      - cimserver decoder
  - Example messages:
  - Dec 18 18:06:28 hostname cimserver[18575]: PGS17200: Authentication failed for user jones_b.
  - Dec 18 18:06:29 hostname cimserver[18575]: PGS17200: Authentication failed for user domain\jones_b.
  -->
 <decoder name="cimserver">
-  <program_name>^cimserver$</program_name>
+  <program_name_pcre2>^cimserver$</program_name_pcre2>
 </decoder>
 
 <decoder name="cimserver-failed-authentication">
   <parent>cimserver</parent>
-  <prematch>^\w+: Authentication failed for user </prematch>
-  <regex offset="after_prematch">^(\S+).$</regex>
+  <prematch_pcre2>^[A-Za-z0-9@_-]+: Authentication failed for user </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+)\.$</pcre2>
   <order>user</order>
 </decoder>
+
 
