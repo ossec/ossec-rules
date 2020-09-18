@@ -1,5 +1,5 @@
 <!-- Pure-FTPd decoder.
-  - Will extract the username/srcip whenever possible.
+       - Will extract the username/srcip whenever possible.
   - Samples by Peter Ahlert <peter@ifup.de> (thanks!)
   - Examples:
   - pure-ftpd-wrapper[926]: connect from 1.1.0.1 (1.1.0.1)
@@ -9,32 +9,34 @@
   - pure-ftpd: (?@59.150.14.54) [WARNING] Authentication failed for user [newuser]
   -->
 <decoder name="pure-ftpd">
-  <program_name>^pure-ftpd</program_name>
+  <program_name_pcre2>^pure-ftpd</program_name_pcre2>
 </decoder>
 
 <decoder name="pure-ftpd-login">
   <parent>pure-ftpd</parent>
-  <prematch>^\S+ [INFO] \S+ is now logged in</prematch>
-  <regex>^\(?@(\S+)\) [INFO] (\S+) is now logged in</regex>
+  <prematch_pcre2>^\S+ \[INFO\] \S+ is now logged in</prematch_pcre2>
+  <pcre2>^\(\?@(\S+)\) \[INFO\] (\S+) is now logged in</pcre2>
   <order>srcip, user</order>
   <fts>name, user, srcip, location</fts>
 </decoder>
 
 <decoder name="pure-ftpd-generic">
   <parent>pure-ftpd</parent>
-  <regex>^\((\S+)@(\S+)\) [</regex>
+  <pcre2>^\((\S+)@(\S+)\) \[</pcre2>
   <order>user,srcip</order>
 </decoder>
 
 <!-- Pure-FTPd transfer log decoder
-  - Examples from ossec-list:
+       - Examples from ossec-list:
   - example.com - user1 [11/Mar/2013:12:10:23 -0000] "PUT /ftpdrive/user1/FinalBackup.zip" 200 25268220
   - example.com - user1 [11/Mar/2013:12:24:57 -0000] "GET /ftpdrive/user1/FinalBackup.zip" 200 25268220
   -->
 
 <decoder name="pure-transfer">
-  <prematch>^\S+ - \S+ [\d\d/\S\S\S/\d\d\d\d:\d\d:\d\d:\d\d \S\d\d\d\d] "\w+ \S+" </prematch>
-  <regex>^(\S+) - (\S+) [\d\d/\S\S\S/\d\d\d\d:\d\d:\d\d:\d\d -\d\d\d\d] "(\S+) (\.+) (\d+) \d+$</regex>
+  <prematch_pcre2>^\S+ - \S+ \[\d{2}/\S{3}/\d{4}:\d{2}:\d{2}:\d{2} \S\d{4}\] "[A-Za-z0-9@_-]+? \S+" </prematch_pcre2>
+  <pcre2>^(\S+) - (\S+) \[\d{2}/\S{3}/\d{4}:\d{2}:\d{2}:\d{2} -\d{4}\] "(\S+) (.+) (\d+) \d+$</pcre2>
   <order>extra_data,dstuser,action,url,status</order>
 </decoder>
+
+
 

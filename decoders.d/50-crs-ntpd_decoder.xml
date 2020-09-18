@@ -1,5 +1,5 @@
 <!-- NTP decoder
-  - gorilla ntpd[27379]: bad sensor nmea0
+       - gorilla ntpd[27379]: bad sensor nmea0
   - tiny ntpd[25875]: bad peer 192.168.1.233 (192.168.1.233)
   - gorilla ntpd[29719]: bind on 192.168.1.233 failed, skipping: Can't assign requested address
   - ix ntpd[8392]: bind on 192.168.17.9 failed, skipping: Address already in use
@@ -12,13 +12,19 @@
   - bridge ntpd[5902]: offset 0.000000 sec freq 0.000 ppm error 0.000011 poll 6
 -->
 <decoder name="ntpd">
-  <program_name>^ntpd</program_name>
+  <program_name_pcre2>^ntpd</program_name_pcre2>
 </decoder>
 
 <decoder name="ntpd-bad-peer">
   <parent>ntpd</parent>
-  <prematch offset="after_parent">^bad peer </prematch>
-  <regex>^bad peer \S+ \p(\S+)\p$|^bad peer from pool \S+ \p(\S+)\p$</regex>
+  <prematch_pcre2 offset="after_parent">^bad peer </prematch_pcre2>
+  <pcre2>^bad peer \S+ \((\S+)\)$|^bad peer from pool \S+ \((\S+)\)$</pcre2>
   <order>srcip</order>
+</decoder>
+
+<decoder name="ntpd-recvmsg">
+  <parent>ntpd</parent>
+  <pcre2>^recvmsg (\S+):</pcre2>
+  <order>dstip</order>
 </decoder>
 

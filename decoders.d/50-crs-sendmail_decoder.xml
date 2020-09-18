@@ -1,5 +1,5 @@
 <!-- Sendmail decoder.
-  - Will extract the srcip
+       - Will extract the srcip
   - Examples:
   - sendmail[15806618]: k1SN9pkK15806618: ruleset=check_mail, arg1=<rtreter@qffff.com>,
   - relay=dsl.static81215198185.ttnet.net.tr [81.215.198.185] (may be forged), reject=553 5.1.8
@@ -11,32 +11,32 @@
   - sendmail[7818]: j6KKHo2d007818: rejecting commands from sv.e103gng.com [66.62.19.10] due to pre-greeting traffic
  -->
 <decoder name="sendmail-reject">
-  <program_name>^sendmail|^sm-mta|^sm-msp-queue</program_name>
+  <program_name_pcre2>^sendmail|^sm-mta|^sm-msp-queue</program_name_pcre2>
 </decoder>
 
 <decoder name="sendmail-pre-greeting">
   <parent>sendmail-reject</parent>
-  <prematch>^\S+: rejecting commands from</prematch>
-  <regex offset="after_prematch">^ \S+ [(\S+)]</regex>
+  <prematch_pcre2>^\S+: rejecting commands from</prematch_pcre2>
+  <pcre2 offset="after_prematch">^ \S+ \[(\S+)\]</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="sendmail-reject-nodns">
   <parent>sendmail-reject</parent>
-  <prematch>relay=[</prematch>
-  <regex offset="after_prematch">^(\S+)]</regex>
+  <prematch_pcre2>relay=\[</prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+)\]</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="sendmail-reject-dns">
   <parent>sendmail-reject</parent>
-  <prematch>relay=\S+ [</prematch>
-  <regex offset="after_prematch">^(\S+)]</regex>
+  <prematch_pcre2>relay=\S+ \[</prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+)\]</pcre2>
   <order>srcip</order>
 </decoder>
 
 <!-- SMF-SAV Sendmail Milter decoder.
-  - Will extract the srcip
+       - Will extract the srcip
   - Examples:
   - smf-sav[513]: [ID 987462 mail.notice] sender check failed: <xkyjywqvophshu@mypersonalemail.com>, 125.133.22.112, [125.133.22.112], [00:00:01]
   - smf-sav[513]: [ID 407019 mail.info] sender check succeeded (cached): <asterisk-users-bounces@lists.digium.com>, 216.207.245.17, lists.digium.com
@@ -46,10 +46,11 @@
    >, 91.146.176.140, pool176-140.cable.tolna.net
   -->
 <decoder name="smf-sav-reject">
-  <program_name>^smf-sav</program_name>
-  <prematch>^sender check failed|</prematch>
-  <prematch>^sender check tempfailed</prematch>
-  <regex offset="after_prematch">^ \(cached\): \S+, (\S+),|</regex>
-  <regex>^: \S+, (\S+),</regex>
+  <program_name_pcre2>^smf-sav</program_name_pcre2>
+  <prematch_pcre2>^sender check failed|</prematch_pcre2>
+  <prematch_pcre2>^sender check tempfailed</prematch_pcre2>
+  <pcre2 offset="after_prematch">^ \(cached\): \S+, (\S+),|</pcre2>
+  <pcre2>^: \S+, (\S+),</pcre2>
   <order>srcip</order>
 </decoder>
+

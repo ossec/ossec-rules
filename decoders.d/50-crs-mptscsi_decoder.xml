@@ -1,5 +1,5 @@
 <!--
-mptscsih \ mptbase decoder
+     mptscsih \ mptbase decoder
 
 Description: module for SCSI controllers.
 
@@ -14,15 +14,15 @@ Examples:
 -->
 <decoder name="mptscsih-1">
   <parent>iptables</parent>
-  <prematch>^[\s\d+.\d+] mptscsih: </prematch>
-  <regex>^[\s\d+.\d+] (\w+): (\w+): task abort: (\w+)</regex>
+  <prematch_pcre2>^\[ \d+\.\d+\] mptscsih: </prematch_pcre2>
+  <pcre2>^\[ \d+\.\d+\] (\w+): (\w+): task abort: (\w+)</pcre2>
   <order>id,data,status</order>
 </decoder>
 
 <decoder name="mptbase-1">
   <parent>iptables</parent>
-  <prematch>^[\s\d+.\d+] mptbase: </prematch>
-  <regex>^[\s\d+.\d+] (\w+): (\w+):\s+\w+ is now (\w+)\p\s(\D+)$</regex>
+  <prematch_pcre2>^\[ \d+\.\d+\] mptbase: </prematch_pcre2>
+  <pcre2>^\[ \d+\.\d+\] (\w+): (\w+):[ ]+[A-Za-z0-9@_-]+ is now (\w+), (\D+)$</pcre2>
   <order>id,data,action,status</order>
 </decoder>
 

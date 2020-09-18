@@ -1,5 +1,5 @@
 <!-- Pix decoder.
-  - Will extract the srcip, srcport, dstip and dstport whenever possible.
+       - Will extract the srcip, srcport, dstip and dstport whenever possible.
   - Examples:
   - %PIX-6-106015: Deny TCP (no connection) from 161.58.238.151/110 to a.b.c.d/3782 flags RST ACK
   - %PIX-2-106001: Inbound TCP connection denied from 165.139.46.7/3854 to 165.189.27.70/139 flags
@@ -29,126 +29,128 @@
   - %PIX-6-302015: Built outbound UDP connection 156 for outside:192.168.2.10/1514 (192.168.2.10/1514) to inside:192.168.1.2/1026 (192.168.2.14/1163)
   -->
 <decoder name="pix">
-  <prematch>^%PIX-|^\w\w\w \d\d \d\d\d\d \d\d:\d\d:\d\d: %PIX-|</prematch>
-  <prematch>^%ASA-|^\w\w\w \d\d \d\d\d\d \d\d:\d\d:\d\d: %ASA-|</prematch>
-  <prematch>^%FWSM-|^\w\w\w \d\d \d\d\d\d \d\d:\d\d:\d\d: %FWSM-</prematch>
+  <prematch_pcre2>^%PIX-|^[A-Za-z0-9@_-]{3} \d{2} \d{4} \d{2}:\d{2}:\d{2}: %PIX-|</prematch_pcre2>
+  <prematch_pcre2>^%ASA-|^[A-Za-z0-9@_-]{3} \d{2} \d{4} \d{2}:\d{2}:\d{2}: %ASA-|</prematch_pcre2>
+  <prematch_pcre2>^%FWSM-|^[A-Za-z0-9@_-]{3} \d{2} \d{4} \d{2}:\d{2}:\d{2}: %FWSM-</prematch_pcre2>
 </decoder>
 
 <decoder name="pix-fw1">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^2-106001</prematch>
-  <regex offset="after_parent">^(\S+): \w+ (\w+) \S+ (\S+) from </regex>
-  <regex>(\S+)/(\S+) to (\S+)/(\S+)</regex>
+  <prematch_pcre2 offset="after_parent">^2-106001</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): [A-Za-z0-9@_-]+ ([A-Za-z0-9@_-]+) \S+ (\S+) from </pcre2>
+  <pcre2>(\S+)/(\S+) to (\S+)/(\S+)</pcre2>
   <order>id, protocol, action, srcip, srcport, dstip, dstport</order>
 </decoder>
 
 <decoder name="pix-fw2">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^3-710003|^7-710002|^7-710005</prematch>
-  <regex offset="after_parent">^(\S+): (\S+) \w+ (\w+) \.+from </regex>
-  <regex>(\S+)/(\S+) to \w+:(\S+)/(\S+)</regex>
+  <prematch_pcre2 offset="after_parent">^3-710003|^7-710002|^7-710005</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): (\S+) [A-Za-z0-9@_-]+ ([A-Za-z0-9@_-]+) .+from </pcre2>
+  <pcre2>(\S+)/(\S+) to [A-Za-z0-9@_-]+:(\S+)/(\S+)</pcre2>
   <order>id, protocol, action, srcip, srcport, dstip, dstport</order>
 </decoder>
 
 <decoder name="pix-fw3">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^4-106023</prematch>
-  <regex offset="after_parent">^(\S+): (\w+) (\w+) src \w+:</regex>
-  <regex>(\S+)/(\S+) dst \w+:(\S+)/(\S+)</regex>
+  <prematch_pcre2 offset="after_parent">^4-106023</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): ([A-Za-z0-9@_-]+) ([A-Za-z0-9@_-]+) src [A-Za-z0-9@_-]+:</pcre2>
+  <pcre2>(\S+)/(\S+) dst [A-Za-z0-9@_-]+?:(\S+)/(\S+)</pcre2>
   <order>id, action, protocol, srcip, srcport, dstip, dstport</order>
 </decoder>
 
 <decoder name="pix-fw4">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^4-106019</prematch>
-  <regex offset="after_parent">^(\S+): IP packet from (\S+) to </regex>
-  <regex>(\S+), protocol (\w+) (\w+) </regex>
+  <prematch_pcre2 offset="after_parent">^4-106019</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): IP packet from (\S+) to </pcre2>
+  <pcre2>(\S+), protocol ([A-Za-z0-9@_-]+) ([A-Za-z0-9@_-]+) </pcre2>
   <order>id, srcip, dstip, protocol, action</order>
 </decoder>
+
 
 <decoder name="pix-fw5">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^2-106006|^2-106007</prematch>
-  <regex offset="after_parent">^(\S+): (\w+) \S+ (\w+) from </regex>
-  <regex>(\S+)/(\d+) to (\S+)/(\d+) </regex>
+  <prematch_pcre2 offset="after_parent">^2-106006|^2-106007</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): ([A-Za-z0-9@_-]+) \S+ ([A-Za-z0-9@_-]+) from </pcre2>
+  <pcre2>(\S+)/(\d+?) to (\S+)/(\d+) </pcre2>
   <order>id, action, protocol, srcip, srcport, dstip, dstport</order>
 </decoder>
 
 <decoder name="pix-fw6">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^6-106015</prematch>
-  <regex offset="after_parent">^(\S+): (\w+) (\w+) \S+ \S+ (\S+) from </regex>
-  <regex>(\S+)/(\S+) to (\S+)/(\S+)</regex>
+  <prematch_pcre2 offset="after_parent">^6-106015</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): ([A-Za-z0-9@_-]+) ([A-Za-z0-9@_-]+) \(no connection\) from (\S+)/</pcre2>
+  <pcre2>(\d+) to (\S+)/(\d+)</pcre2>
   <order>id, action, protocol, srcip, srcport, dstip, dstport</order>
 </decoder>
 
 <decoder name="pix-fw7">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^6-305012</prematch>
-  <regex offset="after_parent">^(\S+): (\w+) \w+ (\w+) translation </regex>
-  <regex>from \w+:(\S+)/(\d+) to \w+:(\S+)/(\d+) </regex>
+  <prematch_pcre2 offset="after_parent">^6-305012</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): ([A-Za-z0-9@_-]+) [A-Za-z0-9@_-]+ ([A-Za-z0-9@_-]+) translation </pcre2>
+  <pcre2>from [A-Za-z0-9@_-]+:(\S+)/(\d+) to [A-Za-z0-9@_-]+:(\S)/(\d+) </pcre2>
   <order>id, action, protocol, srcip, srcport, dstip, dstport</order>
 </decoder>
 
 <decoder name="pix-fw8">
   <parent>pix</parent>
   <type>firewall</type>
-  <prematch offset="after_parent">^3-106011|^3-106010</prematch>
-  <regex offset="after_parent">^(\S+): (\w+) \.+ (\w+) src </regex>
-  <regex>\w+:(\S+)/(\d+) dst \w+:(\S+)/(\d+)</regex>
+  <prematch_pcre2 offset="after_parent">^3-106011|^3-106010</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): ([A-Za-z0-9@_-]+) .+ ([A-Za-z0-9@_-]+) src </pcre2>
+  <pcre2>[A-Za-z0-9@_-]+?:(\S+)/(\d+?) dst [A-Za-z0-9@_-]+?:(\S+)/(\d+)</pcre2>
   <order>id, action, protocol, srcip, srcport, dstip, dstport</order>
 </decoder>
 
 <decoder name="pix-url-success">
   <parent>pix</parent>
-  <prematch offset="after_parent">^5-304001: </prematch>
-  <regex offset="after_parent">^(\S+): (\S+) Accessed URL </regex>
-  <regex>(\S+):(http\w*://\.+)|</regex>
-  <regex>^(\S+): (\S+) Accessed URL (\S+):</regex>
+  <prematch_pcre2 offset="after_parent">^5-304001: </prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): (\S+) Accessed URL </pcre2>
+  <pcre2>(\S+):(http[A-Za-z0-9@_-]*://.+)|</pcre2>
+  <pcre2>^(\S+): (\S+) Accessed URL (\S+):</pcre2>
   <order>id, srcip, dstip, url</order>
 </decoder>
 
 <decoder name="pix-url-deny">
   <parent>pix</parent>
-  <prematch offset="after_parent">^5-304002: </prematch>
-  <regex offset="after_parent">^(\S+): Access (denied) URL (http\w*://\.+) </regex>
-  <regex>SRC (\S+) DEST (\S+) on interface</regex>  
+  <prematch_pcre2 offset="after_parent">^5-304002: </prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): Access (denied) URL (http[A-Za-z0-9@_-]*://.+) </pcre2>
+  <pcre2>SRC (\S+) DEST (\S+) on interface</pcre2>
   <order>id, action, url, srcip, dstip</order>
 </decoder>
 
 <decoder name="pix-attacks">
   <parent>pix</parent>
-  <prematch offset="after_parent">^2-106012: |^2-106017: |</prematch>
-  <prematch>^2-106020|^1-106021|^1-106022|</prematch>
-  <prematch>^4-4000</prematch>
-  <regex offset="after_parent">^(\S+): \.+ from (\S+) </regex>
+  <prematch_pcre2 offset="after_parent">^2-106012: |^2-106017: |</prematch_pcre2>
+  <prematch_pcre2>^2-106020|^1-106021|^1-106022|</prematch_pcre2>
+  <prematch_pcre2>^4-4000</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): .+ from (\S+) </pcre2>
   <order>id, srcip</order>
 </decoder>
 
 <decoder name="pix-srcip">
   <parent>pix</parent>
-  <prematch offset="after_parent">^6-308001</prematch>
-  <regex offset="after_parent">^(\S+): \.+ (\S+)</regex>
+  <prematch_pcre2 offset="after_parent">^6-308001</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): .+ (\S+)</pcre2>
   <order>id, srcip</order>
 </decoder>
 
 <decoder name="pix-srcip-port">
   <parent>pix</parent>
-  <prematch offset="after_parent">^6-605004|^6-605005</prematch>
-  <regex offset="after_parent">^(\S+): Login (\S+) from (\S+)/(\d+) \.+user "(\w+)"</regex>
+  <prematch_pcre2 offset="after_parent">^6-605004|^6-605005</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+): Login (\S+) from (\S+)/(\d+?) .+user "([A-Za-z0-9@_-]+?)"</pcre2>
   <order>id, action, srcip, srcport, user</order>
 </decoder>
 
 <decoder name="pix-generic">
   <parent>pix</parent>
-  <regex offset="after_parent">^(\S+): </regex>
+  <pcre2 offset="after_parent">^(\S+): </pcre2>
   <order>id</order>
 </decoder>
+
 

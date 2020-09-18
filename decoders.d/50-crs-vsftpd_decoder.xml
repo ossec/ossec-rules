@@ -1,5 +1,5 @@
 <!-- vsftpd decoder.
-  - Will extract the srcip.
+       - Will extract the srcip.
   - Examples:
   - Sun Jun  4 22:08:04 2006 [pid 21612] CONNECT: Client "192.168.2.10"
   - Sun Jun  4 22:08:39 2006 [pid 21611] [dcid] OK LOGIN: Client "192.168.2.10"
@@ -13,55 +13,56 @@
   - Sun Aug 16 16:26:21 2015 [pid 4976] [ftpuser] OK RENAME: Client "172.28.5.129", "/index.php /4444index.php"
   
 <decoder name="vsftpd">
-  <prematch>^\w\w\w \w\w\w\s+\d+ \S+ \d+ [pid \d+] </prematch>
-  <regex offset="after_prematch">Client "(\S+)"$</regex>
+  <prematch_pcre2>^[A-Za-z0-9@_-][A-Za-z0-9@_-][A-Za-z0-9@_-] [A-Za-z0-9@_-][A-Za-z0-9@_-][A-Za-z0-9@_-][ ]+?\d+? \S+ \d+? \[pid \d+?\] </prematch_pcre2>
+  <pcre2 offset="after_prematch">Client "(\S+)"$</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="vsftpd">
-  <program_name>^vsftpd</program_name>
-  <prematch>^\w\w\w \w\w\w\s+\d+ \S+ \d+ [pid \d+] </prematch>
-  <regex offset="after_prematch">Client "(\S+)"$</regex>
+  <program_name_pcre2>^vsftpd</program_name_pcre2>
+  <prematch_pcre2>^[A-Za-z0-9@_-][A-Za-z0-9@_-][A-Za-z0-9@_-] [A-Za-z0-9@_-][A-Za-z0-9@_-][A-Za-z0-9@_-][ ]+?\d+? \S+ \d+? \[pid \d+?\] </prematch_pcre2>
+  <pcre2 offset="after_prematch">Client "(\S+)"$</pcre2>
   <order>srcip</order>
 </decoder>
 -->
 
 <!-- #####################################################
-     Add by Omar MEZRAG - 0xFFFFFF
+          Add by Omar MEZRAG - 0xFFFFFF
      ##################################################### -->
 
 <decoder name="vsftpd">
-  <prematch>^\w\w\w \w\w\w\s+\d+ \S+ \d+ [pid \d+] </prematch>
+  <prematch_pcre2>^[A-Za-z0-9@_-]{3} [A-Za-z0-9@_-]{3}[ ]+?\d+? \S+ \d+? \[pid \d+?\] </prematch_pcre2>
 </decoder>
 
 <decoder name="vsftpd">
-  <program_name>^vsftpd</program_name>
-  <prematch>^\w\w\w \w\w\w\s+\d+ \S+ \d+ [pid \d+] </prematch>
+  <program_name_pcre2>^vsftpd</program_name_pcre2>
+  <prematch_pcre2>^[A-Za-z0-9@_-]{3} [A-Za-z0-9@_-]{3}[ ]+?\d+? \S+ \d+? \[pid \d+?\] </prematch_pcre2>
 </decoder>
 
 <decoder name="vsftpd_login">
   <parent>vsftpd</parent>
-  <prematch offset="after_parent"> LOGIN:</prematch>
-  <regex offset="after_parent">[(\S+)] (\S+ LOGIN): Client "(\S+\w)"$</regex>
+  <prematch_pcre2 offset="after_parent"> LOGIN:</prematch_pcre2>
+  <pcre2 offset="after_parent">\[(\S+)\] (\S+ LOGIN): Client "(\S+[A-Za-z0-9@_-])"$</pcre2>
   <order>user,status,srcip</order>
 </decoder>
 
 <decoder name="vsftpd_connect">
   <parent>vsftpd</parent>
-  <prematch offset="after_parent">^CONNECT:</prematch>
-  <regex offset="after_parent">(CONNECT): Client "(\S+\w+)"$</regex>
+  <prematch_pcre2 offset="after_parent">^CONNECT:</prematch_pcre2>
+  <pcre2 offset="after_parent">(CONNECT): Client "(\S+[A-Za-z0-9@_-]+?)"$</pcre2>
   <order>action,srcip</order>
 </decoder>
 
 <decoder name="vsftpd_cmd">
   <parent>vsftpd</parent>
-  <regex offset="after_parent">[(\S+)] (OK \S+): Client "(\S+)", "(\.+)"\.*</regex>
+  <pcre2 offset="after_parent">\[(\S+)\] (OK \S+): Client "(\S+)", "(.+)".*</pcre2>
   <order>user,status,srcip,url</order>
 </decoder>
 
 <decoder name="vsftpd_default">
   <parent>vsftpd</parent>
-  <regex offset="after_parent">Client "(\S+\w)"$</regex>
+  <pcre2 offset="after_parent">Client "(\S+[A-Za-z0-9@_-])"$</pcre2>
   <order>srcip</order>
 </decoder>
+
 

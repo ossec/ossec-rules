@@ -1,0 +1,24 @@
+<decoder name="dhcpd">
+  <program_name_pcre2>^dhcpd$</program_name_pcre2>
+</decoder>
+
+<decoder name="dhcpd-data">
+  <parent>dhcpd</parent>
+  <pcre2 offset="after_parent">^(\S+) \S+ (\S+) \S+ (\S+) via (\S+)$</pcre2>
+  <order>action, srcip, extra_data, extra_data</order>
+</decoder>
+
+<decoder name="dhcpd-ack">
+  <parent>dhcpd</parent>
+  <prematch_pcre2> acking </prematch_pcre2>
+  <pcre2 offset="after_parent">already acking lease (\S+)</pcre2>
+  <order>srcip</order>
+</decoder>
+
+<decoder name="dhcpd-release">
+  <parent>dhcpd</parent>
+  <prematch_pcre2>^IP address</prematch_pcre2>
+  <pcre2 offset="after_parent">^IP address (\S+) </pcre2>
+  <order>srcip</order>
+</decoder>
+

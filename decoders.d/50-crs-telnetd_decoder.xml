@@ -1,5 +1,5 @@
 <!--
- - Telnet decoder
+      - Telnet decoder
  - Will extract the srcip
  - Examples:
  - May 31 12:33:44 queen telnetd[9876]: warning: can't verify hostname:
@@ -11,12 +11,13 @@
  - Jun  2 09:54:28 valhalla telnetd[19723]: [ID 485252 daemon.info] ttloop:  peer died: Error 0
  -->
 <decoder name="telnetd">
-  <program_name>^telnetd|^in.telnetd</program_name>
+  <program_name_pcre2>^telnetd|^in\.telnetd</program_name_pcre2>
 </decoder>
 
 <decoder name="telnetd-ip">
   <parent>telnetd</parent>
-  <regex>from (\S+)$</regex>
+  <pcre2>from (\S+)$</pcre2>
   <order>srcip</order>
 </decoder>
+
 

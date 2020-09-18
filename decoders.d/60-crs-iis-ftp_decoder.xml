@@ -1,5 +1,5 @@
 <!-- IIS 5 W3C FTP log format.
-  - Examples:
+       - Examples:
   - #Fields: date time c-ip cs-username s-sitename s-computername s-ip s-port cs-method cs-uri-stem cs-uri-query sc-status sc-win32-status sc-bytes cs-bytes time-taken cs-version cs-host cs(User-Agent) cs(Cookie) cs(Referer)
   - 2006-07-23 17:57:59 192.168.3.64 Administrator MSFTPSVC1 HAIJO2 192.168.1.12 21 [144]USER Administrator - 331 0 0 0 0 FTP - - - -
   - 2006-07-23 17:57:59 192.168.3.64 Administrator MSFTPSVC1 HAIJO2 192.168.1.12 21 [144]PASS - - 230 0 0 0 16 FTP - - - -
@@ -7,9 +7,11 @@
 <decoder name="msftp">
   <parent>windows-date-format</parent>
   <use_own_name>true</use_own_name>
-  <prematch offset="after_parent">^\S+ \S+ MSFTPSVC</prematch>
-  <regex offset="after_parent">^(\S+) (\S+) \S+ \S+ \S+ </regex>
-  <regex>\d+ [\d+](\S+) \S+ \S+ (\d+) </regex>
+  <prematch_pcre2 offset="after_parent">^\S+ \S+ MSFTPSVC</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+) (\S+) \S+ \S+ \S+ </pcre2>
+  <pcre2>\d+ \[\d+\](\S+) \S+ \S+ (\d+) </pcre2>
   <order>srcip,user,action,id</order>
 </decoder>
+
+
 

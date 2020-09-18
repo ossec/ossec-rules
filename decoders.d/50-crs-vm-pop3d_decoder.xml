@@ -1,15 +1,16 @@
 <!-- VM-POP3 - Virtual Mail Pop3
-  - Examples:
+       - Examples:
   -->
 <decoder name="vm-pop3d">
-  <program_name>^vm-pop3d</program_name>
+  <program_name_pcre2>^vm-pop3d</program_name_pcre2>
 </decoder>
 
 <decoder name="vm-pop3d-fail">
   <parent>vm-pop3d</parent>
-  <prematch>^User '</prematch>
-  <regex offset="after_prematch">^(\S+)' - \w+ auth, </regex>
-  <regex>from=(\S+)$</regex>
+  <prematch_pcre2>^User '</prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+)' - [A-Za-z0-9@_-]+? auth, </pcre2>
+  <pcre2>from=(\S+)$</pcre2>
   <order>user, srcip</order>
 </decoder>
+
 

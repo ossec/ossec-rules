@@ -1,5 +1,5 @@
 <!-- 
-  - Decoder for Sysmon Event ID 1: Process Created
+       - Decoder for Sysmon Event ID 1: Process Created
   - Maintained by Josh Brower, Josh@DefensiveDepth.com 
   -
   -  OSSEC to Sysmon Fields Mapping:
@@ -14,8 +14,9 @@
 
 <decoder name="Sysmon-EventID#1">
 <type>windows</type>
-<prematch>INFORMATION\(1\)</prematch>
-<regex offset="after_prematch">Image: (\.*) \s*CommandLine: \.* \s*User: (\.*) \s*LogonGuid: \S* \s*LogonId: \S* \s*TerminalSessionId: \S* \s*IntegrityLevel: \.*HashType: \S* \s*Hash: (\S*) \s*ParentProcessGuid: \S* \s*ParentProcessID: \S* \s*ParentImage: (\.*) \s*ParentCommandLine:</regex>
+<prematch_pcre2>INFORMATION\(1\)</prematch_pcre2>
+<pcre2 offset="after_prematch">Image: (.*?) [ ]*?CommandLine: .*? [ ]*?User: (.*?) [ ]*?LogonGuid: \S*? [ ]*?LogonId: \S*? [ ]*?TerminalSessionId: \S*? [ ]*?IntegrityLevel: .*?HashType: \S*? [ ]*?Hash: (\S*?) [ ]*?ParentProcessGuid: \S*? [ ]*?ParentProcessID: \S*? [ ]*?ParentImage: (.*?) [ ]*?ParentCommandLine:</pcre2>
 <order>status,user,url,data</order>
 </decoder>
+
 

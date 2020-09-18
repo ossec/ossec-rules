@@ -1,40 +1,42 @@
 <!-- FTPD decoder - Solaris, MacOS and Wu-ftpd).
-  - Examples:
+       - Examples:
   - ftpd[811166]: refused connect from 88.225.42.182
   - in.ftpd[18561]: [ID 484914 daemon.notice] gethostbyaddr: nameservices.net. != 216.117.134.168
   - ftpd[31918]: FTPD: EXPORT file local , remote
   - Dec 21 12:21:20 hostname ftpd[323115]: login jones_b from client.example.org failed.
   -->
 <decoder name="ftpd">
-  <program_name>^ftpd|^in.ftpd</program_name>
+  <program_name_pcre2>^ftpd|^in\.ftpd</program_name_pcre2>
 </decoder>
 
 <decoder name="ftpd-mac-failure">
   <parent>ftpd</parent>
-  <prematch>^Failed authentication from: \S+ |</prematch>
-  <prematch>^repeated login failures from </prematch>
+  <prematch_pcre2>^Failed authentication from: \S+ |</prematch_pcre2>
+  <prematch_pcre2>^repeated login failures from </prematch_pcre2>
   <!--<regex offset="after_prematch">(\S+)</regex>-->
-  <regex offset="after_prematch">^\S+ [(\S+)]$|^(\S+)</regex>
+  <pcre2 offset="after_prematch">^\S+ \[(\S+)\]$|^(\S+)</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ftpd-refused">
   <parent>ftpd</parent>
-  <prematch>^FTP LOGIN REFUSED </prematch>
-  <regex offset="after_prematch">[(\S+)]$</regex>
+  <prematch_pcre2>^FTP LOGIN REFUSED </prematch_pcre2>
+  <pcre2 offset="after_prematch">\[(\S+)\]$</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ftpd-ip">
   <parent>ftpd</parent>
-  <regex>from (\S+)$</regex>
+  <pcre2>from (\S+)$</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="ftpd-tru64">
   <parent>ftpd</parent>
-  <prematch>^login \S+ from \S+ failed.</prematch>
-  <regex>^login (\S+) from (\S+) failed.$</regex>
+  <prematch_pcre2>^login \S+ from \S+ failed\.</prematch_pcre2>
+  <pcre2>^login (\S+) from (\S+) failed\.$</pcre2>
   <order>user, srcip</order>
 </decoder>
+
+
 

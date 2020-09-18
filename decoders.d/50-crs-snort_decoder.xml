@@ -1,5 +1,5 @@
 <!-- Snort decoder.
-  - Will extract the id, srcip and dstip
+       - Will extract the id, srcip and dstip
   - Examples:
   - snort: [1:469:3] ICMP PING NMAP [Classification: Attempted Information
     Leak] [Priority: 2]: {ICMP} 10.4.12.26 -> 10.4.10.231
@@ -17,22 +17,22 @@
   -->
 
 <decoder name="snort">
-  <program_name>^snort</program_name>
+  <program_name_pcre2>^snort</program_name_pcre2>
 </decoder>
 
 <decoder name="snort">
   <type>ids</type>
-  <prematch>^[**] [\d+:\d+:\d+] </prematch>
+  <prematch_pcre2>^\[\*\*\] \[\d+:\d+:\d+\] </prematch_pcre2>
 </decoder>
 
 <decoder name="snort2">
    <parent>snort</parent>
    <type>ids</type>
-   <prematch>^[**] |^[\d+:\d+:\d+] </prematch>
-   <regex>^[**] [(\d+:\d+:\d+)] \.+ (\S+)\p*\d* -> </regex>
-   <regex>(\S+)|^[(\d+:\d+:\d+)] \.+ </regex>
-   <regex>(\S+)\p*\d* -> (\S+)</regex>
+   <prematch_pcre2>^\[\*\*\] \[|^\[Drop\] \[\*\*\] \[|^\[</prematch_pcre2>
+   <pcre2 offset="after_prematch">(\d+:\d+:\d+)\] .+ (\S+?):?\d* -> ([^:]+)</pcre2>
    <order>id,srcip,dstip</order>
    <fts>name,id,srcip,dstip</fts>
 </decoder>
+
+
 

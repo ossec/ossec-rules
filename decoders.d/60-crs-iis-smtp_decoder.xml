@@ -1,5 +1,5 @@
 <!-- IIS 5 W3C SMTP log format (Exchange).
-  - Examples:
+       - Examples:
   - #Fields: date time c-ip cs-username s-sitename s-computername s-ip s-port cs-method cs-uri-stem cs-uri-query sc-status sc-win32-status sc-bytes cs-bytes time-taken cs-version cs-host cs(User-Agent) cs(Cookie) cs(Referer)
   - 2006-10-09 14:04:46 69.217.186.117 - SMTPSVC1 MEE-PDC 192.168.X.X 0 xxxx -
   > +hupylaw.hupy.local 500 0 32 23 0 SMTP - - - -
@@ -7,9 +7,11 @@
 <decoder name="msexchange">
   <parent>windows-date-format</parent>
   <use_own_name>true</use_own_name>
-  <prematch offset="after_parent">^\S+ \S+ SMTPSVC</prematch>
-  <regex offset="after_parent">^(\S+) \S+ \S+ \S+ \S+ </regex>
-  <regex>\d+ (\S+) \S+ \S+ (\d+) </regex>
+  <prematch_pcre2 offset="after_parent">^\S+ \S+ SMTPSVC</prematch_pcre2>
+  <pcre2 offset="after_parent">^(\S+) \S+ \S+ \S+ \S+ </pcre2>
+  <pcre2>\d+ (\S+) \S+ \S+ (\d+) </pcre2>
   <order>srcip, action, id</order>
 </decoder>
+
+
 

@@ -1,5 +1,5 @@
 <!-- Su decoder.
-  -  Will extract the username.
+       -  Will extract the username.
   -  Examples:
   -  su[2921936]: failed: ttyq4 changing from ldap to root
   -  su[234]: BAD SU ger to fwmaster on /dev/ttyp0
@@ -13,38 +13,48 @@
   - 'su root' failed for chapman on /dev/pts/1
   -->
 <decoder name="su">
-  <program_name>^su$</program_name>
+  <program_name_pcre2>^su$</program_name_pcre2>
 </decoder>
 
 <decoder name="su-detail">
   <parent>su</parent>
-  <prematch>^'su </prematch>
-  <regex>^'su (\S+)' \S+ for (\S+) on \S+$</regex>
+  <prematch_pcre2>^'su </prematch_pcre2>
+  <pcre2>^'su (\S+)' \S+ for (\S+) on \S+$</pcre2>
   <order>dstuser, srcuser</order>
   <fts>name, srcuser, location</fts>
 </decoder>
 
 <decoder name="su-ldap">
   <parent>su</parent>
-  <prematch>pam_ldap</prematch>
-  <regex>user "uid=(\S+),</regex>
+  <prematch_pcre2>pam_ldap</prematch_pcre2>
+  <pcre2>user "uid=(\S+),</pcre2>
   <order>user</order>
 </decoder>
 
 <decoder name="su">
-  <prematch>^SU \S+ \S+ </prematch>
-  <regex offset="after_prematch">^\S \S+ (\S+)-(\S+)$</regex>
+  <prematch_pcre2>^SU \S+ \S+ </prematch_pcre2>
+  <pcre2 offset="after_prematch">^\S \S+ (\S+)-(\S+)$</pcre2>
   <order>srcuser, dstuser</order>
   <fts>name, srcuser, location</fts>
 </decoder>
 
+<decoder name="su-failed">
+  <parent>su</parent>
+  <prematch_pcre2>^FAILED SU </prematch_pcre2>
+  <pcre2 offset="after_prematch">^\(to (\S+) (\S+) on</pcre2>
+  <order>dstuser, srcuser</order>
+</decoder>
+
+
 <decoder name="su-detail2">
   <parent>su</parent>
-  <prematch> </prematch>
-  <regex>^BAD SU (\S+) to (\S+) on|</regex>
-  <regex>^failed: \S+ changing from (\S+) to (\S+)|</regex>
-  <regex>^\S \S+ (\S+)\p(\S+)$|^(\S+) to (\S+) on </regex>
+  <prematch_pcre2> </prematch_pcre2>
+  <pcre2>^BAD SU (\S+) to (\S+) on|</pcre2>
+  <pcre2>^failed: \S+ changing from (\S+) to (\S+)|</pcre2>
+  <pcre2>^\S \S+ (\S+)[()*+,.:;\<=>?\[\]!"'#%&$|{}-](\S+)$|^(\S+) to (\S+) on </pcre2>
   <order>srcuser, dstuser</order>
   <fts>name, srcuser, location</fts>
 </decoder>
+
+
 

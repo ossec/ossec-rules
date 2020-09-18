@@ -1,17 +1,18 @@
 <!-- OpenBSD doas -->
 <decoder name="doas">
-  <program_name>^doas</program_name>
+  <program_name_pcre2>^doas</program_name_pcre2>
 </decoder>
 
 <decoder name="doas-user">
   <parent>doas</parent>
-  <regex>^(\S+) ran| for (\S+):</regex>
+  <pcre2>^(\S+) ran| for (\S+):</pcre2>
   <order>srcuser</order>
 </decoder>
 
 <decoder name="doas-user">
   <parent>doas</parent>
-  <regex offset="after_parent"> as (\S+): </regex>
+  <pcre2 offset="after_parent"> as (\S+): </pcre2>
   <order>dstuser</order>
 </decoder>
+
 

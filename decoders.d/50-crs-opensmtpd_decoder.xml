@@ -1,33 +1,33 @@
 <!-- OpenBSD smtpd decoders -->
 
 <decoder name="smtpd">
-  <program_name>^smtpd</program_name>
+  <program_name_pcre2>^smtpd</program_name_pcre2>
 </decoder>
 
 <decoder name="smtpd-client">
   <parent>smtpd</parent>
-  <prematch offset="after_parent">^client</prematch>
-  <regex>^client (\S+) </regex>
+  <prematch_pcre2 offset="after_parent">^client</prematch_pcre2>
+  <pcre2>^client (\S+) </pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="smtpd-relay">
   <parent>smtpd</parent>
-  <prematch>relay=</prematch>
-  <regex>relay=\S+ [(\S+)], </regex>
+  <prematch_pcre2>relay=</prematch_pcre2>
+  <pcre2>relay=\S+ \[(\S+)\], </pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="smtpd-in">
   <parent>smtpd</parent>
-  <prematch offset="after_parent">^smtp-in: </prematch>
-  <regex offset="after_prematch">^(\S+) </regex>
+  <prematch_pcre2 offset="after_parent">^smtp-in: </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+) </pcre2>
   <order>status</order>
 </decoder>
 
 <decoder name="smtpd-in">
   <parent>smtpd</parent>
-  <regex> => (\d+) </regex>
+  <pcre2> => (\d+) </pcre2>
   <order>action</order>
 </decoder>
 

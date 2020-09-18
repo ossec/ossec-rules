@@ -1,5 +1,5 @@
 <!-- Named decoder.
-  - Will extract the srcip
+       - Will extract the srcip
   - Examples:
   -  valhalla named[7885]: client 192.168.1.231#1142: update 'hayaletgemi.edu/IN' denied
   - named[12637]: client 1.2.3.4#32769: query (cache) 'somedomain.com/MX/IN' denied
@@ -7,34 +7,40 @@
   -  Oct 22 10:12:33 junction named[31687]: reloading configuration failed: unexpected token
  -->
 <decoder name="named">
-  <program_name>^named</program_name>
+  <program_name_pcre2>^named</program_name_pcre2>
 </decoder>
 
 <decoder name="named-query">
   <parent>named</parent>
-  <prematch>: query: </prematch>
-  <regex>client (\S+)#\d+\s*\S*: query: (\S+) IN </regex>
+  <prematch_pcre2>: query </prematch_pcre2>
+  <pcre2>client (\S+)#\d+[ ]*?\S*: </pcre2>
   <order>srcip,url</order>
 </decoder>
 
+<decoder name="named-query">
+  <parent>named</parent>
+  <pcre2>query: (\S+) IN|query \S+ '(\S+)/</pcre2>
+  <order>url</order>
+</decoder>
 
 <decoder name="named_client">
   <parent>named</parent>
-  <prematch>^client </prematch>
-  <regex offset="after_prematch">^(\S+)#</regex>
+  <prematch_pcre2>^client </prematch_pcre2>
+  <pcre2 offset="after_prematch">^(\S+)#</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="named_from">
-  <parent>named</parent>  
-  <regex offset="after_parent"> from [(\S+)]</regex>
+  <parent>named</parent>
+  <pcre2 offset="after_parent"> from \[(\S+)\]</pcre2>
   <order>srcip</order>
 </decoder>
 
 <decoder name="named-master">
   <parent>named</parent>
-  <prematch> for master</prematch>
-  <regex>for master (\S+):(\d+) \S+ \(source (\S+)#d+\)$</regex>
+  <prematch_pcre2> for master</prematch_pcre2>
+  <pcre2>for master (\S+):(\d+) \S+ \(source (\S+)#d\+\)$</pcre2>
   <order>dstip,dstport,srcip</order>
 </decoder>
+
 
