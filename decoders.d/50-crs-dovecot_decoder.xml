@@ -1,5 +1,5 @@
 <!-- Dovecot Decoder
-  - Will extract username, srcip and dstip when available.
+       - Will extract username, srcip and dstip when available.
   - Jun 17 10:15:24 hostname dovecot: Dovecot v1.2.rc3 starting up (core dumps disabled)
   - Jun 17 10:15:24 hostname dovecot: Fatal: auth(default): Support not compiled in for passdb driver 'ldap'
   - Jun 17 10:15:24 hostname dovecot: Fatal: Auth process died too early - shutting down
@@ -21,58 +21,59 @@
 -->
 
 <decoder name="dovecot">
-  <program_name>^dovecot</program_name>
+  <program_name_pcre2>^dovecot</program_name_pcre2>
 </decoder>
 
 <decoder name="dovecot-success">
   <parent>dovecot</parent>
-  <prematch offset="after_parent">^\w\w\w\w-login: Login: </prematch>
-  <regex offset="after_prematch">^user=\p(\S+)\p, method=\S+, rip=(\S+), lip=(\S+), mpid=\S+, (\S*)$</regex>
+  <prematch_pcre2 offset="after_parent">^\w{4}-login: Login: </prematch_pcre2>
+  <pcre2 offset="after_prematch">^user=\<(\S+)\>, method=\S+, rip=(\S+), lip=(\S+), mpid=\S+, (\S*?)$</pcre2>
   <order>user, srcip, dstip, protocol</order>
 </decoder>
 
 <decoder name="dovecot-aborted">
   <parent>dovecot</parent>
-  <prematch offset="after_parent">^\w\w\w\w-login: Aborted login</prematch>
-  <regex offset="after_prematch">: user=\p(\S+)\p, method=\S+, rip=(\S+), lip=(\S+), (\S*)$</regex>
+  <prematch_pcre2 offset="after_parent">^\w{4}-login: Aborted login</prematch_pcre2>
+  <pcre2 offset="after_prematch">: user=\<(\S+)\>, method=\S+, rip=(\S+), lip=(\S+), (\S*)$</pcre2>
   <order>user, srcip, dstip, protocol</order>
-</decoder> 
+</decoder>
 
 <decoder name="dovecot-fail">
   <parent>dovecot</parent>
-  <prematch offset="after_parent">^auth\(default\)|auth-worker\(default\)</prematch>
-  <regex offset="after_prematch">^: \S+\((\S+),(\S+)\)</regex>
+  <prematch_pcre2 offset="after_parent">^auth\(default\)|auth-worker\(default\)</prematch_pcre2>
+  <pcre2 offset="after_prematch">^: \S+\((\S+),(\S+)\)</pcre2>
   <order>user, srcip</order>
 </decoder>
 
 <decoder name="dovecot-authfailed">
   <parent>dovecot</parent>
-  <prematch offset="after_parent">^\w\w\w\w-login:</prematch>
-  <regex offset="after_prematch">\(auth failed, \d+ attempts in \d+ secs\): user=\p(\S+)\p, method=\w+, rip=(\S+), lip=(\S+)</regex>
+  <prematch_pcre2 offset="after_parent">^\w{4}-login:</prematch_pcre2>
+  <pcre2 offset="after_prematch">\(auth failed, \d+? attempts in \d+? secs\): user=\<(\S+)\>, method=\S+, rip=(\S+), lip=(\S+)</pcre2>
   <order>user,srcip,dstip</order>
 </decoder>
 
 <decoder name="dovecot-disconnect">
   <parent>dovecot</parent>
-  <prematch offset="after_parent">^\w\w\w\w-login: Disconnected: </prematch>
-  <regex offset="after_prematch">^rip=(\S+), lip=(\S+)</regex>
+  <prematch_pcre2 offset="after_parent">^\w{4}-login: Disconnected: </prematch_pcre2>
+  <pcre2 offset="after_prematch">^rip=(\S+), lip=(\S+)</pcre2>
   <order>srcip, dstip</order>
 </decoder>
 
 <decoder name="dovecot-info">
-  <program_name>^Info$|^Warn$</program_name>
+  <program_name_pcre2>^Info$|^Warn$</program_name_pcre2>
 </decoder>
 
 <decoder name="imap-login-login">
   <parent>dovecot-info</parent>
-  <prematch>imap-login</prematch>
-  <regex offset="after_parent">Login: user=(\S+), method=\.+, rip=(\S+), lip=(\S+) </regex>
+  <prematch_pcre2>imap-login</prematch_pcre2>
+  <pcre2 offset="after_parent">Login: user=(\S+), method=.+, rip=(\S+), lip=(\S+) </pcre2>
   <order>user, srcip, dstip</order>
 </decoder>
 
 <decoder name="dovecot-info-auth">
   <parent>dovecot-info</parent>
-  <regex offset="after_parent">auth\(\.+\): \S+\((\S+),(\S+)\):</regex>
+  <pcre2 offset="after_parent">auth\(.+\): \S+\((\S+),(\S+)\):</pcre2>
   <order>user, srcip</order>
 </decoder>
+
 
