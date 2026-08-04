@@ -2,10 +2,10 @@
        - Examples:
   - [2007-08-31 18:37:09.454 ADT] 192.168.2.99: LOG:  connection authorized: user=ossec_user database=ossecdb
   - [2007-08-31 18:37:15.525 ADT] 192.168.2.99: ERROR:  relation "alert2" does not exist
+  - Timezone token must start with a letter so cPanel numeric offsets (+/-0400) are not stolen.
   -->
 <decoder name="postgresql_log">
-  <prematch_pcre2>^\[\d{4}-\d{2}-\d{2} \S+ [A-Za-z0-9@_-]+?\] </prematch_pcre2>
+  <prematch_pcre2>^\[\d{4}-\d{2}-\d{2} \S+ [A-Za-z][A-Za-z0-9@_+-]*\] </prematch_pcre2>
   <pcre2 offset="after_prematch">^\S+ ([A-Za-z0-9@_-]+?): </pcre2>
   <order>status</order>
 </decoder>
-

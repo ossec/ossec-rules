@@ -68,7 +68,7 @@
 
 <!-- OpenBSD httpd -->
 <decoder name="openbsd-httpd">
-  <prematch_pcre2> \[\d+/[A-Za-z0-9@_-]+/\d+:\d+:\d+:\d+ -\d+\] "</prematch_pcre2>
+  <prematch_pcre2> \[\d+/[A-Za-z]+/\d+:\d+:\d+:\d+ -\d+\] "</prematch_pcre2>
   <pcre2>^(\S+) (\S+) \S+ \S+ \[\d+/[A-Za-z0-9@_-]+/\d+:\d+:\d+:\d+ -\d+\] "(\S+) (\S+) HTTP/\d\.\d" (\d+?) \d$</pcre2>
   <order>url, srcip, protocol, url, status</order>
   <type>web-log</type>
