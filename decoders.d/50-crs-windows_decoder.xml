@@ -21,11 +21,16 @@
   <program_name_pcre2>^WinEvtLog</program_name_pcre2>
 </decoder>
 
+<!-- Log name may contain ":" (e.g. a path); take the first STATUS(id):
+     with a lazy prefix. Source/user/domain stop at the next ":" — chained
+     greedy ".+: " pieces backtracked through every ": " of the message
+     text (cubic in their count) and gave up once the PCRE2 match limit
+     was hit. -->
 <decoder name="windows1">
   <type>windows</type>
   <parent>windows</parent>
-  <pcre2 offset="after_parent">^.+: ([A-Za-z0-9@_-]+?)\((\d+?)\): (.+): </pcre2>
-  <pcre2>(.+): .+: (\S+): </pcre2>
+  <pcre2 offset="after_parent">^(?:.+?): ([A-Za-z0-9@_-]+?)\((\d+?)\): ([^:]+): </pcre2>
+  <pcre2>([^:]+): [^:]+: (\S+): </pcre2>
   <order>status, id, extra_data, user, system_name</order>
   <fts>name, location, system_name</fts>
 </decoder>
