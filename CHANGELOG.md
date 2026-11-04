@@ -2,7 +2,7 @@
 
 Release history for the OSSEC community ruleset. Versions match the git tags on this repository. The ruleset uses the `crs` filename prefix (community ruleset).
 
-## [4.0] - Unreleased
+## [4.0] - 2026-11-04
 
 Rules and decoders accumulated since 3.0, kept in line with the matching ossec-hids fixes.
 

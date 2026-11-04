@@ -8,7 +8,7 @@ This repository is the OSSEC community ruleset (filename prefix `crs`). It is no
 
 - [README](README.md): layout, install paths, test command, and how to find a rule
 - [CATALOG](CATALOG.md): every rules file with its rule-id range, and every decoder name
-- [CHANGELOG](CHANGELOG.md): releases v1.0, v2.0, v3.0, and the unreleased 4.0 notes
+- [CHANGELOG](CHANGELOG.md): releases v1.0, v2.0, v3.0, and v4.0
 - [Decoder fields](decoders.d/README.md): srcip, dstip, user, url, action, status, and the other extracted fields
 
 ## Search

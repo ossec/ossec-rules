@@ -63,7 +63,7 @@ An `.ini` section has `rule`, `alert`, and `decoder`. A key named `log N pass` m
 
 ## Releases
 
-Tags on this repository: `v1.0`, `v2.0`, `v3.0`. The next release is 4.0. See [CHANGELOG.md](CHANGELOG.md).
+Tags on this repository: `v1.0`, `v2.0`, `v3.0`, and `v4.0`. See [CHANGELOG.md](CHANGELOG.md).
 
 ## Changing a rule
 
