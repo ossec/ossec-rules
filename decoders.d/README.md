@@ -1,17 +1,22 @@
-<!--
-   - Allowed fields:
-   - location - where the log came from (only on FTS)
-   - srcuser  - extracts the source username
-   - dstuser  - extracts the destination (target) username
-   - user     - an alias to dstuser (only one of the two can be used)
-   - srcip    - source ip
-   - dstip    - dst ip
-   - srcport  - source port
-   - dstport  - destination port
-   - protocol - protocol
-   - id       - event id
-   - url      - url of the event
-   - action   - event action (deny, drop, accept, etc)
-   - status   - event status (success, failure, etc)
-   - extra_data     - Any extra data
-  -->
+# Decoder fields
+
+A decoder `name` is the string a rule uses in `<decoded_as>`, or the parent a child decoder attaches to. Child decoders pull fields out of one log line. The names below are the OSSEC fields these decoders fill.
+
+| Field | Meaning |
+| --- | --- |
+| `location` | Where the log came from. Only on first-time-seen events. |
+| `srcuser` | Source username. |
+| `dstuser` | Target username. |
+| `user` | Alias of `dstuser`. A decoder sets one of the two. |
+| `srcip` | Source IP address. |
+| `dstip` | Destination IP address. |
+| `srcport` | Source port. |
+| `dstport` | Destination port. |
+| `protocol` | Protocol. |
+| `id` | Event id. |
+| `url` | URL on the event. |
+| `action` | What the event did: deny, drop, accept, and similar. |
+| `status` | Outcome: success, failure, and similar. |
+| `extra_data` | Anything else the decoder captured. |
+
+The full list of decoder names, and which file defines each one, is in [CATALOG.md](../CATALOG.md).

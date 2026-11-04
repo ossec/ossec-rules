@@ -1,0 +1,19 @@
+# OSSEC Rules
+
+> Community detection rules and log decoders for OSSEC HIDS. Product rules live in rules.d, decoders in decoders.d, log samples in ossec-testing/tests, and rootcheck lists in shared.
+
+This repository is the OSSEC community ruleset (filename prefix `crs`). It is not the OSSEC HIDS source tree. Rule ids are unique across rules.d. A rule selects a decoder by the decoder `name` attribute.
+
+## Docs
+
+- [README](README.md): layout, install paths, test command, and how to find a rule
+- [CATALOG](CATALOG.md): every rules file with its rule-id range, and every decoder name
+- [CHANGELOG](CHANGELOG.md): releases v1.0, v2.0, v3.0, and the unreleased 4.0 notes
+- [Decoder fields](decoders.d/README.md): srcip, dstip, user, url, action, status, and the other extracted fields
+
+## Search
+
+- Rule id `5714` is SSH CRC-32 compensation, in `rules.d/50-crs-sshd_rules.xml`
+- Decoder names are `<decoder name="...">` in `decoders.d/`
+- Sample logs for a product are `ossec-testing/tests/<product>.ini`
+- Install copies `rules.d` to `/var/ossec/etc/rules.d/` and `decoders.d` to `/var/ossec/etc/decoders.d/`
